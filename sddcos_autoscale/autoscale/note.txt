@@ -1,0 +1,1 @@
+curl -XGET http://20.26.25.119:8090/policy
