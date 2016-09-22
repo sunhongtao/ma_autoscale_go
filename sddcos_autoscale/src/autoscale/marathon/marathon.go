@@ -1,5 +1,5 @@
 /*
-AutoSacle for SDDCOS, China Mobile Zhejiang Co. Ltd. 
+AutoSacle for SDDCOS, China Mobile Zhejiang Co. Ltd.
 By Zhong ChuJian
 Most Code from QubitProducts/bamboo/services/marathon/
 */
@@ -7,15 +7,15 @@ Most Code from QubitProducts/bamboo/services/marathon/
 package marathon
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"sort"
-	"strings"
 	"strconv"
-	"bytes"
-	"fmt"
-	
+	"strings"
+
 	"autoscale/configuration"
 )
 
@@ -324,24 +324,23 @@ func _fetchApps(url string, conf *configuration.Configuration) (AppList, error) 
 	return apps, nil
 }
 
-
 func ScaleApp(appId string, tasks int, conf *configuration.Configuration) error {
 	var err error
 	for _, endpoint := range conf.Marathon.Endpoints() {
 		err = _scaleApp(appId, tasks, endpoint, conf)
 		if err == nil {
 			return nil
-		} 
+		}
 	}
 	return err
 }
 
 func _scaleApp(appId string, tasks int, endpoint string, conf *configuration.Configuration) error {
-	b := bytes.NewBufferString("{\"instances\":" + strconv.Itoa(tasks) + "}" )
+	b := bytes.NewBufferString("{\"instances\":" + strconv.Itoa(tasks) + "}")
 	//fmt.Println(b)
 	//fmt.Println(endpoint)
 	//fmt.Println(appId)
-	
+
 	client := &http.Client{}
 	req, _ := http.NewRequest("PUT", endpoint+"/v2/apps"+appId, b)
 	req.Header.Add("Accept", "application/json")
@@ -349,24 +348,23 @@ func _scaleApp(appId string, tasks int, endpoint string, conf *configuration.Con
 	if len(conf.Marathon.User) > 0 && len(conf.Marathon.Password) > 0 {
 		req.SetBasicAuth(conf.Marathon.User, conf.Marathon.Password)
 	}
-	
+
 	resp, err := client.Do(req)
-	
+
 	if err != nil {
 		return err
 	}
-	
+
 	if resp.StatusCode != http.StatusOK {
-    	return fmt.Errorf("Bad HTTP Response: %v", resp.Status)
+		return fmt.Errorf("Bad HTTP Response: %v", resp.Status)
 	}
-	
+
 	defer resp.Body.Close()
 	/*
-	contents, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
+		contents, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return nil, err
+		}
 	*/
 	return nil
 }
-

@@ -1,5 +1,5 @@
 /*
-AutoSacle for SDDCOS, China Mobile Zhejiang Co. Ltd. 
+AutoSacle for SDDCOS, China Mobile Zhejiang Co. Ltd.
 By Zhong ChuJian
 */
 
@@ -14,7 +14,6 @@ import (
 )
 
 var logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile)
-
 
 /*
 	Mesos Marathon configuration
@@ -32,21 +31,19 @@ type Configuration struct {
 	// Marathon
 	Marathon Marathon
 
-	// InfluxDB 
+	// InfluxDB
 	MetricInfluxdb string
 
 	// Database uri
 	DcosDSN string
-	
+
 	// Check interval
 	CheckInterval int64
-
 }
 
 func (m Marathon) Endpoints() []string {
 	return strings.Split(m.Endpoint, ",")
 }
-
 
 func FromEnv() Configuration {
 	conf := &Configuration{}
@@ -58,7 +55,7 @@ func FromEnv() Configuration {
 	setValueFromEnv(&conf.DcosDSN, "AUTOSCALE_DCOS_DSN")
 	//optional
 	setIntValueFromEnv(&conf.CheckInterval, "AUTOSCALE_CHECK_INTERVAL")
-	
+
 	return *conf
 }
 

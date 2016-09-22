@@ -15,13 +15,13 @@ import (
 	"os"
 	"time"
 
+	"autoscale/api"
+	"autoscale/configuration"
+	"autoscale/marathon"
+	"autoscale/metrics"
+	"autoscale/scalepolicy"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/julienschmidt/httprouter"
-	"github.com/xwisen/zcj/api"
-	"github.com/xwisen/zcj/configuration"
-	"github.com/xwisen/zcj/marathon"
-	"github.com/xwisen/zcj/metrics"
-	"github.com/xwisen/zcj/scalepolicy"
 	//_ "github.com/mattn/go-oci8"
 )
 
@@ -83,10 +83,10 @@ func main() {
 			if err != nil {
 				log.Printf("ERROR Fetch marathon apps error: %s\n", err)
 			}
-			log.Println("============",scalelist)
+			log.Println("============", scalelist)
 			for _, sc := range scalelist {
 				if !(sc.AutoScaleAdmin && sc.AppScalePolicy.AutoScale) {
-					log.Printf("=========",sc.AutoScaleAdmin,sc.AppScalePolicy.AutoScale)
+					log.Printf("=========", sc.AutoScaleAdmin, sc.AppScalePolicy.AutoScale)
 					log.Printf("INFO App %s autoScale disabled\n", sc.AppId)
 					break
 				}
