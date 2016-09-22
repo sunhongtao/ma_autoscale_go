@@ -15,13 +15,13 @@ import (
 	"os"
 	"time"
 
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/julienschmidt/httprouter"
 	"autoscale/api"
 	"autoscale/configuration"
 	"autoscale/marathon"
 	"autoscale/metrics"
 	"autoscale/scalepolicy"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/julienschmidt/httprouter"
 	//_ "github.com/mattn/go-oci8"
 )
 
@@ -70,7 +70,6 @@ func main() {
 	if err != nil {
 		log.Printf("ERROR Fetch autoscale policy from db error: %s\n", err)
 	}
-	log.Println(scalelist)
 	js, _ := json.MarshalIndent(scalelist, "", "  ")
 	log.Printf("INFO Found %d app scale policies from config: %s\n", len(scalelist), string(js))
 
@@ -83,15 +82,15 @@ func main() {
 			if err != nil {
 				log.Printf("ERROR Fetch marathon apps error: %s\n", err)
 			}
-			log.Println("============", scalelist)
 			for _, sc := range scalelist {
+	//			log.Println("========",sc.AutoScaleAdmin,sc.AppScalePolicy.AutoScale)
 				if !(sc.AutoScaleAdmin && sc.AppScalePolicy.AutoScale) {
-					log.Printf("=========", sc.AutoScaleAdmin, sc.AppScalePolicy.AutoScale)
 					log.Printf("INFO App %s autoScale disabled\n", sc.AppId)
 					break
 				}
 				for _, app := range apps {
-					if app.Id == sc.AppId {
+				//	log.Println("appid, sc.Appid=========",app.Id,sc.AppId)
+					if app.Id[1:] == sc.AppId {
 						target := 0
 						if sc.AppScalePolicy.ScalePolicy.StaticScalePolicy.Enable {
 							log.Printf("INFO App %s staticScalePolicy enabled, Checking...\n", sc.AppId)
@@ -200,7 +199,6 @@ func cpuScale(app *marathon.App, sc *scalepolicy.AppScale, t1 time.Time, conf *c
 	scPct := sc.AppScalePolicy.ScalePolicy.CpuScalePolicy.ScaleOutPercent
 	curTsk := len(app.Tasks)
 	tgtTsk := 0
-
 	if usage > maxCpu {
 		tgtTsk = int(math.Ceil(float64(curTsk) * (1 + float64(scPct)/100)))
 		if tgtTsk > maxTsk {
