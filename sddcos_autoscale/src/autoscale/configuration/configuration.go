@@ -38,6 +38,9 @@ type Configuration struct {
 	// Database uri
 	DcosDSN string
 	
+	//database testuri
+	DcosMYSQLSYS string
+	
 	// Check interval
 	CheckInterval int64
 
@@ -56,6 +59,7 @@ func FromEnv() Configuration {
 	setValueFromEnv(&conf.Marathon.Password, "AUTOSCALE_MARATHON_PASSWORD")
 	setValueFromEnv(&conf.MetricInfluxdb, "AUTOSCALE_METRIC_INFLUXDB")
 	setValueFromEnv(&conf.DcosDSN, "AUTOSCALE_DCOS_DSN")
+	setValueFromEnv(&conf.DcosMYSQLSYS, "AUTOSCALE_DCOS_MYSQLSYS")
 	//optional
 	setIntValueFromEnv(&conf.CheckInterval, "AUTOSCALE_CHECK_INTERVAL")
 	

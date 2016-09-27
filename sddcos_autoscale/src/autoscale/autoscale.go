@@ -9,51 +9,54 @@ import (
 	"database/sql"
 	//"fmt"
 	"encoding/json"
+	"fmt"
 	"log"
 	"math"
 	"net/http"
 	"os"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/julienschmidt/httprouter"
 	"autoscale/api"
 	"autoscale/configuration"
 	"autoscale/marathon"
 	"autoscale/metrics"
 	"autoscale/scalepolicy"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/julienschmidt/httprouter"
 	//_ "github.com/mattn/go-oci8"
 )
 
 var logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile)
 
-var SCALE_INTERVAL time.Duration = 60
+var SCALE_INTERVAL time.Duration = 10
 
 func main() {
 	os.Setenv("NLS_LANG", "AMERICAN_AMERICA.AL32UTF8")
 
 	conf := configuration.FromEnv()
+	dbsys, errsys:=sql.Open("mysql", conf.DcosMYSQLSYS)
 	db, err := sql.Open("mysql", conf.DcosDSN)
 	if err != nil {
 		log.Printf("ERROR Open database error: %s\n", err)
 		return
 	}
 	defer db.Close()
+	defer dbsys.Close()
 
-	//if err = testSelect(db); err != nil {
-	//	log.Printf("ERROR Database error: %s\n", err)
-	//	return
-	//}
+	if errsys= testSelect(dbsys); errsys != nil {
+		log.Printf("ERROR1 Database error: %s\n", errsys)
+		return
+	}
 
-	//if err = createTablePolicy(db); err != nil {
-	//	log.Printf("ERROR Database error: %s\n", err)
-	//	return
-	//}
+	if err = createTablePolicy(db, dbsys); err != nil {
+		log.Printf("ERROR Database error: %s\n", err)
+		return
+	}
 
-	//if err = createTableLogs(db); err != nil {
-	//	log.Printf("ERROR Database error: %s\n", err)
-	//	return
-	//}
+	if err = createTableLogs(db, dbsys); err != nil {
+		log.Printf("ERROR Database error: %s\n", err)
+		return
+	}
 
 	//getMarathonApps(getMarathonEndpoint())
 	apps, err := marathon.FetchApps(conf.Marathon, &conf)
@@ -83,13 +86,13 @@ func main() {
 				log.Printf("ERROR Fetch marathon apps error: %s\n", err)
 			}
 			for _, sc := range scalelist {
-	//			log.Println("========",sc.AutoScaleAdmin,sc.AppScalePolicy.AutoScale)
+				log.Println("========",sc.AutoScaleAdmin,sc.AppScalePolicy.AutoScale,sc.AppId)
 				if !(sc.AutoScaleAdmin && sc.AppScalePolicy.AutoScale) {
 					log.Printf("INFO App %s autoScale disabled\n", sc.AppId)
-					break
+					continue	
 				}
 				for _, app := range apps {
-				//	log.Println("appid, sc.Appid=========",app.Id,sc.AppId)
+					//	log.Println("appid, sc.Appid=========",app.Id,sc.AppId)
 					if app.Id[1:] == sc.AppId {
 						target := 0
 						if sc.AppScalePolicy.ScalePolicy.StaticScalePolicy.Enable {
@@ -147,6 +150,8 @@ func apiServer(conf *configuration.Configuration, scalelist *scalepolicy.ScaleLi
 }
 
 func staticScale(app *marathon.App, sc *scalepolicy.AppScale, t0 time.Time, t1 time.Time) int {
+	var message string
+	conf := configuration.FromEnv()
 	i := len(sc.AppScalePolicy.ScalePolicy.StaticScalePolicy.ScalePoints)
 	for i := i - 1; i >= 0; i-- {
 		s := t1.Format("2006-01-02 ") + sc.AppScalePolicy.ScalePolicy.StaticScalePolicy.ScalePoints[i].Time
@@ -158,15 +163,19 @@ func staticScale(app *marathon.App, sc *scalepolicy.AppScale, t0 time.Time, t1 t
 
 		if (t.Before(t1) && t.After(t0)) || t.Equal(t1) {
 			log.Printf("INFO T0:%s T1:%s T:%s Matched\n", t0.Local(), t1.Local(), t.Local())
+			message = fmt.Sprintf("INFO T0:%s T1:%s T:%s Matched\n", t0.Local(), t1.Local(), t.Local())
 			return sc.AppScalePolicy.ScalePolicy.StaticScalePolicy.ScalePoints[i].Tasks //only match once
 		} else {
+			message = fmt.Sprintf("INFO T0:%s T1:%s T:%s Matched\n", t0.Local(), t1.Local(), t.Local())
 			log.Printf("INFO T0:%s T1:%s T:%s NOT Matched\n", t0.Local(), t1.Local(), t.Local())
 		}
 	}
+	db_operation(conf.Marathon.Endpoint, sc.AppId, message)
 	return 0
 }
 
 func cpuScale(app *marathon.App, sc *scalepolicy.AppScale, t1 time.Time, conf *configuration.Configuration) int {
+	var message string
 	if sc.LastScale != "" {
 		t, err := time.ParseInLocation("2006-01-02 15:04:05", sc.LastScale, time.Local)
 		if err != nil {
@@ -204,20 +213,26 @@ func cpuScale(app *marathon.App, sc *scalepolicy.AppScale, t1 time.Time, conf *c
 		if tgtTsk > maxTsk {
 			tgtTsk = maxTsk
 		}
+		message = fmt.Sprintf("DEBUG App %s CPU usage %.1f > %.1f(max), target tasks is %d\n", sc.AppId, usage, maxCpu, tgtTsk)
 		log.Printf("DEBUG App %s CPU usage %.1f > %.1f(max), target tasks is %d\n", sc.AppId, usage, maxCpu, tgtTsk)
 	} else if usage < minCpu {
 		tgtTsk = int(math.Floor(float64(curTsk) * (1 - float64(scPct)/500))) //Slower 5X when scale in
 		if tgtTsk < minTsk {
 			tgtTsk = minTsk
 		}
+		message = fmt.Sprintf("DEBUG App %s CPU usage %.1f < %.1f(min), target tasks is %d\n", sc.AppId, usage, minCpu, tgtTsk)
 		log.Printf("DEBUG App %s CPU usage %.1f < %.1f(min), target tasks is %d\n", sc.AppId, usage, minCpu, tgtTsk)
 	} else {
+		message = fmt.Sprintf("DEBUG App %s CPU usage %.1f between %.1f(min) to %.1f(max), no scale\n", sc.AppId, usage, minCpu, maxCpu)
 		log.Printf("DEBUG App %s CPU usage %.1f between %.1f(min) to %.1f(max), no scale\n", sc.AppId, usage, minCpu, maxCpu)
 	}
+	db_operation(conf.Marathon.Endpoint, sc.AppId, message)
+	//log.Println("==marathon endpoint===  appid=====", conf.Marathon.Endpoint, sc.AppId)
 	return tgtTsk
 }
 
 func concurrentScale(app *marathon.App, sc *scalepolicy.AppScale, t1 time.Time, conf *configuration.Configuration) int {
+	var message string
 	if sc.LastScale != "" {
 		t, err := time.ParseInLocation("2006-01-02 15:04:05", sc.LastScale, time.Local)
 		if err != nil {
@@ -256,16 +271,20 @@ func concurrentScale(app *marathon.App, sc *scalepolicy.AppScale, t1 time.Time, 
 		if tgtTsk > maxTsk {
 			tgtTsk = maxTsk
 		}
+		message = fmt.Sprintf("DEBUG App %s concurrent %.1f > %.1f(max), target tasks is %d\n", sc.AppId, usage, maxCcr, tgtTsk)
 		log.Printf("DEBUG App %s concurrent %.1f > %.1f(max), target tasks is %d\n", sc.AppId, usage, maxCcr, tgtTsk)
 	} else if usage < minCcr {
 		tgtTsk = int(math.Floor(float64(curTsk) * (1 - float64(scPct)/500))) //Slower 5X when scale in
 		if tgtTsk < minTsk {
 			tgtTsk = minTsk
 		}
+		message = fmt.Sprintf("DEBUG App %s concurrent %.1f < %.1f(min), target tasks is %d\n", sc.AppId, usage, minCcr, tgtTsk)
 		log.Printf("DEBUG App %s concurrent %.1f < %.1f(min), target tasks is %d\n", sc.AppId, usage, minCcr, tgtTsk)
 	} else {
+		message = fmt.Sprintf("DEBUG App %s concurrent %.1f between %.1f(min) to %.1f(max), no scale\n", sc.AppId, usage, minCcr, maxCcr)
 		log.Printf("DEBUG App %s concurrent %.1f between %.1f(min) to %.1f(max), no scale\n", sc.AppId, usage, minCcr, maxCcr)
 	}
+	db_operation(conf.Marathon.Endpoint, sc.AppId, message)
 	return tgtTsk
 }
 
@@ -285,7 +304,7 @@ func testSelect(db *sql.DB) error {
 }
 
 func tableExists(db *sql.DB, tbName string) (bool, error) {
-	rows, err := db.Query("select count(*) from user_tables where table_name='" + tbName + "'")
+	rows, err := db.Query("select count(*) from innodb_table_stats where table_name='" + tbName + "'")
 	if err != nil {
 		return false, err
 	}
@@ -294,15 +313,15 @@ func tableExists(db *sql.DB, tbName string) (bool, error) {
 	for rows.Next() {
 		var cnt int
 		rows.Scan(&cnt)
-		if cnt == 1 {
+		if cnt != 0  {
 			return true, nil
 		}
 	}
 	return false, nil
 }
 
-func createTablePolicy(db *sql.DB) error {
-	bExist, err := tableExists(db, "DCOS_AUTOSCALE_POLICY")
+func createTablePolicy(db *sql.DB, dbsys *sql.DB) error {
+	bExist, err := tableExists(dbsys, "dcos_autoscale_policy")
 	if err != nil {
 		return err
 	}
@@ -311,12 +330,12 @@ func createTablePolicy(db *sql.DB) error {
 	} else {
 		log.Println("INFO table DCOS_AUTOSCALE_POLICY not exists.")
 		if _, err = db.Exec("create table dcos_autoscale_policy(" +
-			"marathon_endpoint varchar2(256) not null, " +
-			"app_id varchar2(256) not null, " +
-			"autoscale_admin number(1) not null, " +
-			"scale_policy clob not null, " +
-			"last_scale date, " +
-			"constraint PK_DCOS_AUTOSCALE_POLICY primary key(marathon_endpoint, app_id) " +
+			"marathon_endpoint varchar(255) not null, " +
+			"app_id varchar(255) not null, " +
+			"autoscale_admin tinyint(10) not null, " +
+			"scale_policy varchar(2000) default null, " +
+			"last_scale datetime(6) not null, " +
+			"primary key(marathon_endpoint, app_id) " +
 			") "); err != nil {
 			return err
 		}
@@ -325,8 +344,8 @@ func createTablePolicy(db *sql.DB) error {
 	return nil
 }
 
-func createTableLogs(db *sql.DB) error {
-	bExist, err := tableExists(db, "DCOS_AUTOSCALE_LOGS")
+func createTableLogs(db *sql.DB, dbsys *sql.DB) error {
+	bExist, err := tableExists(dbsys, "dcos_autoscale_logs")
 	if err != nil {
 		return err
 	}
@@ -335,13 +354,32 @@ func createTableLogs(db *sql.DB) error {
 	} else {
 		log.Println("INFO table DCOS_AUTOSCALE_LOGS not exists.")
 		if _, err = db.Exec("create table dcos_autoscale_logs(" +
-			"log_time date not null, " +
-			"marathon_endpoint varchar2(256) not null, " +
-			"app_id varchar2(256) not null, " +
-			"message varchar2(256) not null) "); err != nil {
+			"log_time datetime(6) not null, " +
+			"marathon_endpoint varchar(255) not null, " +
+			"app_id varchar(100) not null, " +
+			"message varchar(255) not null) "); err != nil {
 			return err
 		}
 		log.Println("INFO table DCOS_AUTOSCALE_LOGS created.")
 	}
 	return nil
+}
+
+func db_operation(marathon_edp string, app_id string, message string) {
+	conf := configuration.FromEnv()
+	db, err := sql.Open("mysql", conf.DcosDSN)
+	sql_statement := "insert dcos_autoscale_logs SET log_time=?,marathon_endpoint=?,app_id=?,message=?"
+	//insert data
+	stmt, err := db.Prepare(sql_statement)
+	checkErr(err)
+	res, err := stmt.Exec(time.Now(), marathon_edp, app_id, message)
+	checkErr(err)
+	id, err := res.LastInsertId()
+	fmt.Println(id)
+}
+
+func checkErr(err error) {
+	if err != nil {
+		fmt.Println(err)
+	}
 }
