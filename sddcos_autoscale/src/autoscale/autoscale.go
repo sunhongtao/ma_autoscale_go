@@ -7,8 +7,7 @@ package main
 
 import (
 	"database/sql"
-	//"fmt"
-	"encoding/json"
+//	"encoding/json"
 	"fmt"
 	"log"
 	"math"
@@ -21,6 +20,7 @@ import (
 	"autoscale/marathon"
 	"autoscale/metrics"
 	"autoscale/scalepolicy"
+	"github.com/ant0ine/go-json-rest/rest"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/julienschmidt/httprouter"
 	//_ "github.com/mattn/go-oci8"
@@ -28,13 +28,13 @@ import (
 
 var logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile)
 
-var SCALE_INTERVAL time.Duration = 10
+var SCALE_INTERVAL time.Duration = 5
 
 func main() {
 	os.Setenv("NLS_LANG", "AMERICAN_AMERICA.AL32UTF8")
 
 	conf := configuration.FromEnv()
-	dbsys, errsys:=sql.Open("mysql", conf.DcosMYSQLSYS)
+	dbsys, errsys := sql.Open("mysql", conf.DcosMYSQLSYS)
 	db, err := sql.Open("mysql", conf.DcosDSN)
 	if err != nil {
 		log.Printf("ERROR Open database error: %s\n", err)
@@ -43,7 +43,7 @@ func main() {
 	defer db.Close()
 	defer dbsys.Close()
 
-	if errsys= testSelect(dbsys); errsys != nil {
+	if errsys = testSelect(dbsys); errsys != nil {
 		log.Printf("ERROR1 Database error: %s\n", errsys)
 		return
 	}
@@ -59,40 +59,51 @@ func main() {
 	}
 
 	//getMarathonApps(getMarathonEndpoint())
-	apps, err := marathon.FetchApps(conf.Marathon, &conf)
-	if err != nil {
-		log.Printf("ERROR Fetch marathon apps error: %s\n", err)
-	}
-	al := ""
-	for _, app := range apps {
-		al = al + app.Id + " "
-	}
-	log.Printf("INFO Found %d apps in marathon: %s\n", len(apps), al)
+	//apps, err := marathon.FetchApps(conf.Marathon, &conf)
+	//if err != nil {
+	//	log.Printf("ERROR Fetch marathon apps error: %s\n", err)
+	//}
+	//al := ""
+	//for _, app := range apps {
+	//	al = al + app.Id + " "
+	//}
+	//log.Printf("INFO Found %d apps in marathon: %s\n", len(apps), al)
+	scalelist := scalepolicy.ScaleList{}
 
-	scalelist, err := scalepolicy.FromDB(db, conf.Marathon.Endpoint)
-	if err != nil {
-		log.Printf("ERROR Fetch autoscale policy from db error: %s\n", err)
-	}
-	js, _ := json.MarshalIndent(scalelist, "", "  ")
-	log.Printf("INFO Found %d app scale policies from config: %s\n", len(scalelist), string(js))
+	//Update scale policy if changed
+	go func() {
+		for {
+			scalelist, err = scalepolicy.FromDB(db, conf.Marathon.Endpoint)
+			if err != nil {
+				log.Printf("ERROR Fetch autoscale policy from db error: %s\n", err)
+			}
+		//	js, _ := json.MarshalIndent(scalelist, "", "  ")
+			log.Printf("INFO Found %d app scale policies\n", len(scalelist))
+			time.Sleep(SCALE_INTERVAL * time.Second)
+		}
+	}()
 
+	//whether scale: check the policy with the performance index
 	go func() {
 		t0 := time.Now()
 		for {
 			t1 := time.Now()
 			//TODO: Collect app info every time
-			apps, err = marathon.FetchApps(conf.Marathon, &conf)
+			apps, err := marathon.FetchApps(conf.Marathon, &conf)
 			if err != nil {
 				log.Printf("ERROR Fetch marathon apps error: %s\n", err)
 			}
+			al := ""
+			for _, app := range apps {
+				al = al + app.Id + " "
+			}
+			log.Printf("INFO Found %d apps in marathon: %s\n", len(apps), al)
 			for _, sc := range scalelist {
-				log.Println("========",sc.AutoScaleAdmin,sc.AppScalePolicy.AutoScale,sc.AppId)
 				if !(sc.AutoScaleAdmin && sc.AppScalePolicy.AutoScale) {
 					log.Printf("INFO App %s autoScale disabled\n", sc.AppId)
-					continue	
+					continue
 				}
 				for _, app := range apps {
-					//	log.Println("appid, sc.Appid=========",app.Id,sc.AppId)
 					if app.Id[1:] == sc.AppId {
 						target := 0
 						if sc.AppScalePolicy.ScalePolicy.StaticScalePolicy.Enable {
@@ -123,22 +134,38 @@ func main() {
 				}
 			}
 			time.Sleep(SCALE_INTERVAL * time.Second) //TODO: more precise time
-			//TODO: Update scale policy if changed
-
 			t0 = t1
 		}
 	}()
 
-	apiServer(&conf, &scalelist)
+	//	apiServer_httprouter(&conf, &scalelist)
 	/*
 		for {
 			log.Printf("*********\n")
 			time.Sleep(10*time.Second)
 		}
 	*/
+	apiServer_rest(&conf, &scalelist)
 }
 
-func apiServer(conf *configuration.Configuration, scalelist *scalepolicy.ScaleList) {
+func apiServer_rest(conf *configuration.Configuration, scalelist *scalepolicy.ScaleList) {
+	serviceAPI1 := api.ServiceAPI{Config: conf, ScaleList: scalelist}
+	api := rest.NewApi()
+	api.Use(rest.DefaultDevStack...)
+	router, err := rest.MakeRouter(
+		rest.Get("/policy", serviceAPI1.GetAllPolicies),
+		rest.Post("/policy", serviceAPI1.PostPolicy),
+		rest.Get("/policy/:APPID", serviceAPI1.GetPolicy),
+		rest.Delete("/policy/:APPID", serviceAPI1.DeletePolicy),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+	api.SetApp(router)
+	log.Fatal(http.ListenAndServe(":8080", api.MakeHandler()))
+}
+
+func apiServer_httprouter(conf *configuration.Configuration, scalelist *scalepolicy.ScaleList) {
 	serviceAPI := api.ServiceAPI{Config: conf, ScaleList: scalelist}
 
 	router := httprouter.New()
@@ -187,7 +214,7 @@ func cpuScale(app *marathon.App, sc *scalepolicy.AppScale, t1 time.Time, conf *c
 			return 0
 		}
 	}
-	//TODO: When Exception, not scale
+	//TODO: When Exception, not scale,with the help of monitor
 
 	//get cpu usage
 	usage, err := metrics.GetCpuUsage(sc.AppId, conf)
@@ -313,7 +340,7 @@ func tableExists(db *sql.DB, tbName string) (bool, error) {
 	for rows.Next() {
 		var cnt int
 		rows.Scan(&cnt)
-		if cnt != 0  {
+		if cnt != 0 {
 			return true, nil
 		}
 	}
@@ -368,6 +395,11 @@ func createTableLogs(db *sql.DB, dbsys *sql.DB) error {
 func db_operation(marathon_edp string, app_id string, message string) {
 	conf := configuration.FromEnv()
 	db, err := sql.Open("mysql", conf.DcosDSN)
+	if err != nil {
+		log.Printf("ERROR Open database error: %s\n", err)
+		return
+	}
+	defer db.Close()
 	sql_statement := "insert dcos_autoscale_logs SET log_time=?,marathon_endpoint=?,app_id=?,message=?"
 	//insert data
 	stmt, err := db.Prepare(sql_statement)

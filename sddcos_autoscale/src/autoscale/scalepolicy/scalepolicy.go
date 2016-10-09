@@ -13,9 +13,6 @@ import (
 	"os"
 	"log"
 	//"time"
-   	"fmt"
-        "reflect"
-
 )
 
 var logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile)
@@ -89,7 +86,6 @@ func FromDB(db *sql.DB, marathon string) (ScaleList, error) {
        return nil, err
     }
     defer rows.Close()
-    fmt.Println("=================****==================")
     scalelist := ScaleList{}
     for rows.Next() {
         //var appid 	string
@@ -98,10 +94,7 @@ func FromDB(db *sql.DB, marathon string) (ScaleList, error) {
         var policy AppScalePolicy
         var scale AppScale
         rows.Scan(&scale.AppId, &scale.AutoScaleAdmin, &contents)
-        log.Println("Typeof=======:",reflect.TypeOf(contents))
-	log.Println("appid, autoScaleadmin====:",scale.AppId,scale.AutoScaleAdmin)
         err = json.Unmarshal([]byte(contents), &policy)
-        log.Println("scale:===============",policy)
 		if err != nil {
 			log.Printf("ERROR Scale policy unmarshal error: AppID is %s\n", scale.AppId)
 			goto A

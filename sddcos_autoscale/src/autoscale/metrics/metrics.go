@@ -86,7 +86,7 @@ func GetConcurrent(appId string, conf *configuration.Configuration) (float64, er
 	}
 	defer c.Close()
 	
-	q := fmt.Sprintf("SELECT MEAN(container_thread_running) FROM container WHERE container_appid='%s' and time>now() - 62s", appId)
+	q := fmt.Sprintf("SELECT MEAN(container_thread_running) FROM container WHERE container_appname='%s' and time>now() - 62s", appId)
 	res, err := queryDB(c, q)
 	if err != nil {
     	//fmt.Println("Error: ", err.Error())
