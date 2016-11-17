@@ -1,6 +1,6 @@
 /*
 AutoSacle for SDDCOS, China Mobile Zhejiang Co. Ltd.
-By Zhong ChuJian
+By Hunter
 */
 
 package main
@@ -77,8 +77,9 @@ func main() {
 			if err != nil {
 				log.Printf("ERROR Fetch autoscale policy from db error: %s\n", err)
 			}
-		//	js, _ := json.MarshalIndent(scalelist, "", "  ")
+			//js, _ := json.MarshalIndent(scalelist, "", "  ")
 			log.Printf("INFO Found %d app scale policies\n", len(scalelist))
+			//log.Printf("INFO from config policy:%s\n", string(js))
 			time.Sleep(SCALE_INTERVAL * time.Second)
 		}
 	}()
@@ -162,7 +163,7 @@ func apiServer_rest(conf *configuration.Configuration, scalelist *scalepolicy.Sc
 		log.Fatal(err)
 	}
 	api.SetApp(router)
-	log.Fatal(http.ListenAndServe(":8080", api.MakeHandler()))
+	log.Fatal(http.ListenAndServe(":10086", api.MakeHandler()))
 }
 
 func apiServer_httprouter(conf *configuration.Configuration, scalelist *scalepolicy.ScaleList) {

@@ -1,0 +1,127 @@
+2016/11/02 18:09:24 WARN Environment variable not set: AUTOSCALE_CHECK_INTERVAL
+2016/11/02 18:09:24 ERROR1 Database error: dial tcp 127.0.0.1:3306: getsockopt: connection refused
+2016/11/02 18:11:04 INFO Using environment override AUTOSCALE_MARATHON_ENDPOINT=http://20.26.2.20:8081
+2016/11/02 18:11:04 INFO Using environment override AUTOSCALE_MARATHON_USER=dcosadmin
+2016/11/02 18:11:04 INFO Using environment override AUTOSCALE_MARATHON_PASSWORD=zjdcos01
+2016/11/02 18:11:04 INFO Using environment override AUTOSCALE_METRIC_INFLUXDB=http://20.26.20.25:8086
+2016/11/02 18:11:04 INFO Using environment override AUTOSCALE_DCOS_DSN=root:root@tcp(20.26.17.137:3366)/go_autoscale
+2016/11/02 18:11:04 INFO Using environment override AUTOSCALE_DCOS_MYSQLSYS=root:root@tcp(20.26.17.137:3366)/mysql
+2016/11/02 18:11:04 INFO Using environment override AUTOSCALE_CHECK_INTERVAL=30
+2016/11/02 18:11:04 INFO 
+2016/11/02 18:11:04 INFO table DCOS_AUTOSCALE_POLICY exists.
+2016/11/02 18:11:04 INFO table DCOS_AUTOSCALE_LOGS exists.
+2016/11/02 18:11:04 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:11:04 INFO Found 0 apps in marathon: 
+2016/11/02 18:11:04 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:11:04 INFO Found 1 app scale policies
+2016/11/02 18:11:09 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:11:09 INFO Found 0 apps in marathon: 
+2016/11/02 18:11:09 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:11:09 INFO Found 1 app scale policies
+2016/11/02 18:11:14 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:11:14 INFO Found 0 apps in marathon: 
+2016/11/02 18:11:14 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:11:14 INFO Found 1 app scale policies
+2016/11/02 18:11:19 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:11:19 INFO Found 0 apps in marathon: 
+2016/11/02 18:11:19 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:11:19 INFO Found 1 app scale policies
+2016/11/02 18:11:24 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:11:24 INFO Found 0 apps in marathon: 
+2016/11/02 18:11:24 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:11:24 INFO Found 1 app scale policies
+./a.sh: line 12:  9036 Killed                  go run autoscale.go
+2016/11/02 18:11:29 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:11:29 INFO Found 0 apps in marathon: 
+2016/11/02 18:11:29 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:11:29 INFO Found 1 app scale policies
+2016/11/02 18:11:34 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:11:34 INFO Found 0 apps in marathon: 
+2016/11/02 18:11:34 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:11:34 INFO Found 1 app scale policies
+2016/11/02 18:11:39 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:11:39 INFO Found 0 apps in marathon: 
+2016/11/02 18:11:39 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:11:39 INFO Found 1 app scale policies
+2016/11/02 18:11:44 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:11:44 INFO Found 0 apps in marathon: 
+2016/11/02 18:11:44 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:11:44 INFO Found 1 app scale policies
+2016/11/02 18:11:49 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:11:49 INFO Found 0 apps in marathon: 
+2016/11/02 18:11:49 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:11:49 INFO Found 1 app scale policies
+2016/11/02 18:12:16 INFO Using environment override AUTOSCALE_MARATHON_ENDPOINT=http://20.26.2.20:8081
+2016/11/02 18:12:16 INFO Using environment override AUTOSCALE_MARATHON_USER=dcosadmin
+2016/11/02 18:12:16 INFO Using environment override AUTOSCALE_MARATHON_PASSWORD=zjdcos01
+2016/11/02 18:12:16 INFO Using environment override AUTOSCALE_METRIC_INFLUXDB=http://20.26.20.25:8086
+2016/11/02 18:12:16 INFO Using environment override AUTOSCALE_DCOS_DSN=root:root@tcp(20.26.17.137:3366)/go_autoscale
+2016/11/02 18:12:16 INFO Using environment override AUTOSCALE_DCOS_MYSQLSYS=root:root@tcp(20.26.17.137:3366)/mysql
+2016/11/02 18:12:16 INFO Using environment override AUTOSCALE_CHECK_INTERVAL=30
+2016/11/02 18:12:16 INFO 
+2016/11/02 18:12:16 INFO table DCOS_AUTOSCALE_POLICY exists.
+2016/11/02 18:12:16 INFO table DCOS_AUTOSCALE_LOGS exists.
+2016/11/02 18:12:16 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:12:16 INFO Found 0 apps in marathon: 
+2016/11/02 18:12:16 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:12:16 INFO Found 1 app scale policies
+2016/11/02 18:12:21 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:12:21 INFO Found 0 apps in marathon: 
+2016/11/02 18:12:21 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:12:21 INFO Found 1 app scale policies
+2016/11/02 18:12:26 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:12:26 INFO Found 0 apps in marathon: 
+2016/11/02 18:12:26 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:12:26 INFO Found 1 app scale policies
+2016/11/02 18:12:31 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:12:31 INFO Found 0 apps in marathon: 
+2016/11/02 18:12:31 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:12:31 INFO Found 1 app scale policies
+2016/11/02 18:12:36 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:12:36 INFO Found 0 apps in marathon: 
+2016/11/02 18:12:36 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:12:36 INFO Found 1 app scale policies
+2016/11/02 18:12:41 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:12:41 INFO Found 0 apps in marathon: 
+2016/11/02 18:12:41 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:12:41 INFO Found 1 app scale policies
+2016/11/02 18:12:46 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:12:46 INFO Found 0 apps in marathon: 
+2016/11/02 18:12:46 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:12:46 INFO Found 1 app scale policies
+2016/11/02 18:12:51 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:12:51 INFO Found 0 apps in marathon: 
+2016/11/02 18:12:51 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:12:51 INFO Found 1 app scale policies
+./a.sh: line 12:  9263 Killed                  go run autoscale.go
+2016/11/02 18:12:56 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:12:56 INFO Found 0 apps in marathon: 
+2016/11/02 18:12:56 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:12:56 INFO Found 1 app scale policies
+2016/11/02 18:13:40 INFO Using environment override AUTOSCALE_MARATHON_ENDPOINT=http://20.26.2.20:8081
+2016/11/02 18:13:40 INFO Using environment override AUTOSCALE_MARATHON_USER=dcosadmin
+2016/11/02 18:13:40 INFO Using environment override AUTOSCALE_MARATHON_PASSWORD=zjdcos01
+2016/11/02 18:13:40 INFO Using environment override AUTOSCALE_METRIC_INFLUXDB=http://20.26.20.25:8086
+2016/11/02 18:13:40 INFO Using environment override AUTOSCALE_DCOS_DSN=root:root@tcp(20.26.17.137:3366)/go_autoscale
+2016/11/02 18:13:40 INFO Using environment override AUTOSCALE_DCOS_MYSQLSYS=root:root@tcp(20.26.17.137:3366)/mysql
+2016/11/02 18:13:40 INFO Using environment override AUTOSCALE_CHECK_INTERVAL=30
+2016/11/02 18:13:40 INFO 
+2016/11/02 18:13:40 INFO table DCOS_AUTOSCALE_POLICY exists.
+2016/11/02 18:13:40 INFO table DCOS_AUTOSCALE_LOGS exists.
+2016/11/02 18:13:40 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:13:40 INFO Found 0 apps in marathon: 
+2016/11/02 18:13:40 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:13:40 INFO Found 1 app scale policies
+2016/11/02 18:13:45 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:13:45 INFO Found 0 apps in marathon: 
+2016/11/02 18:13:45 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:13:45 INFO Found 1 app scale policies
+2016/11/02 18:13:50 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:13:50 INFO Found 0 apps in marathon: 
+2016/11/02 18:13:50 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:13:50 INFO Found 1 app scale policies
+2016/11/02 18:13:55 ERROR Fetch marathon apps error: Get http://20.26.2.20:8081/v2/tasks: http: error connecting to proxy http://proxy.zj.chinamobile.com:8080: dial tcp: lookup proxy.zj.chinamobile.com: no such host
+2016/11/02 18:13:55 INFO Found 0 apps in marathon: 
+2016/11/02 18:13:55 ERROR Scale policy ID is not matched: AppID-DB is demo2, AppID-json is demo
+2016/11/02 18:13:55 INFO Found 1 app scale policies
+signal: interrupt

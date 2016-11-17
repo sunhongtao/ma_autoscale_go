@@ -1,6 +1,6 @@
 /*
 AutoSacle for SDDCOS, China Mobile Zhejiang Co. Ltd. 
-By Zhong ChuJian
+By Hunter
 Most Code from QubitProducts/bamboo/services/marathon/
 */
 
@@ -101,6 +101,7 @@ type marathonApps struct {
 
 type marathonApp struct {
 	Id           string                `json:"id"`
+	Instances    int	 	   `json:"instances"`
 	HealthChecks []marathonHealthCheck `json:"healthChecks"`
 	Ports        []int                 `json:"ports"`
 	Env          map[string]string     `json:"env"`
@@ -143,7 +144,9 @@ func fetchMarathonApps(endpoint string, conf *configuration.Configuration) (map[
 	dataById := map[string]marathonApp{}
 
 	for _, appConfig := range appResponse.Apps {
-		dataById[appConfig.Id] = appConfig
+		if (appConfig.Instances != 0) {
+			dataById[appConfig.Id] = appConfig
+			}
 	}
 
 	return dataById, nil
