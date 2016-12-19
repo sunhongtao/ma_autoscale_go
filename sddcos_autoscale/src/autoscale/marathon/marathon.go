@@ -1,22 +1,30 @@
 /*
-AutoSacle for SDDCOS, China Mobile Zhejiang Co. Ltd. 
-By Hunter
+AutoSacle for SDDCOS, China Mobile Zhejiang Co. Ltd.
+By Zhong ChuJian
 Most Code from QubitProducts/bamboo/services/marathon/
 */
 
 package marathon
 
 import (
+	"autoscale/configuration"
+	"bytes"
+	"crypto/md5"
+	"crypto/rand"
+	"database/sql"
+	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
+	"fmt"
+	_ "github.com/go-sql-driver/mysql"
+	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"sort"
-	"strings"
 	"strconv"
-	"bytes"
-	"fmt"
-	
-	"autoscale/configuration"
+	"strings"
+	"time"
 )
 
 // Describes an app process running
@@ -101,7 +109,7 @@ type marathonApps struct {
 
 type marathonApp struct {
 	Id           string                `json:"id"`
-	Instances    int	 	   `json:"instances"`
+	Instances    int                   `json:"instances"`
 	HealthChecks []marathonHealthCheck `json:"healthChecks"`
 	Ports        []int                 `json:"ports"`
 	Env          map[string]string     `json:"env"`
@@ -144,9 +152,9 @@ func fetchMarathonApps(endpoint string, conf *configuration.Configuration) (map[
 	dataById := map[string]marathonApp{}
 
 	for _, appConfig := range appResponse.Apps {
-		if (appConfig.Instances != 0) {
+		if appConfig.Instances != 0 {
 			dataById[appConfig.Id] = appConfig
-			}
+		}
 	}
 
 	return dataById, nil
@@ -290,6 +298,26 @@ func parseHealthCheckProtocol(checks []marathonHealthCheck) string {
 }
 
 /*
+generate uuid
+*/
+//生成32位md5字串
+func GetMd5String(s string) string {
+	h := md5.New()
+	h.Write([]byte(s))
+	return hex.EncodeToString(h.Sum(nil))
+}
+
+//生成Guid字串
+func GetGuid() string {
+	b := make([]byte, 48)
+
+	if _, err := io.ReadFull(rand.Reader, b); err != nil {
+		return ""
+	}
+	return GetMd5String(base64.URLEncoding.EncodeToString(b))
+}
+
+/*
 	Apps returns a struct that describes Marathon current app and their
 	sub tasks information.
 	Parameters:
@@ -327,24 +355,84 @@ func _fetchApps(url string, conf *configuration.Configuration) (AppList, error) 
 	return apps, nil
 }
 
-
-func ScaleApp(appId string, tasks int, conf *configuration.Configuration) error {
+func ScaleApp(appId string, tasks int, origin int, conf *configuration.Configuration) error {
 	var err error
 	for _, endpoint := range conf.Marathon.Endpoints() {
 		err = _scaleApp(appId, tasks, endpoint, conf)
 		if err == nil {
 			return nil
-		} 
+		}
 	}
 	return err
 }
+func Updatepolicy(appId string) {
+	var err error
+	conf :=configuration.FromEnv()
+	db, err:=sql.Open("mysql", conf.DcosDSN)
+	if err != nil {
+		log.Printf("Error Open database error : %s\n", err)
+	}
+	defer db.Close()
+	sql_statement := "update dcos_autoscale_policy set last_scale=? where app_id=?"
+	stmt, err := db.Prepare(sql_statement)
+	scale_time := time.Now().Format("2006-01-02 15:04:05")
+	res, _ := stmt.Exec(scale_time,appId)
+	c, _:= res.RowsAffected()
+	log.Println("update affected rows:", c)
+}
+func Insertsyslog(appId string, tasks int, origin int) {
+	var err error
+	appId = appId[1:]
+	conf := configuration.FromEnv()
+	db, err := sql.Open("mysql", conf.DcosDSN)
+	if err != nil {
+		log.Printf("ERROR Open database error: %s\n", err)
+		return
+	}
+	defer db.Close()
+	rows,_ := db.Query("select app_name from cfg_app_public where app_id=%s",appId)
+	var appname string
+	for rows.Next() {
+		err := rows.Scan(&appname)
+		checkErr(err)
+	}
+	log.Printf("=============debug===========appname",appname)
+	sql_statement := "insert sys_log SET type=?,time=?,username=?,info=?,seq=?,lv=?,op_obj=?,app_id=?,msg_status=?,RESULT=?"
+	if tasks > origin {
+		stmt, err := db.Prepare(sql_statement)
+		checkErr(err)
+		info := fmt.Sprintf("模块名称: %s,自动扩容成功,描述:实例数从%d扩至%d", appname, origin, tasks)
+		seq := GetGuid()
+		scale_time := time.Now().Format("2006-01-02 15:04:05")
+		res, err := stmt.Exec("自动扩容", scale_time, "admin", info, seq, "INFO", "SCALE", appId, 0, "成功")
+		checkErr(err)
+		id, err := res.LastInsertId()
+		fmt.Println(id)
+	} else if tasks < origin {
+		stmt, err := db.Prepare(sql_statement)
+		checkErr(err)
+		info := fmt.Sprintf("模块名称: %s,自动缩容成功,描述:实例数从%d缩至%d", appname, origin, tasks)
+		seq := GetGuid()
+		scale_time := time.Now().Format("2006-01-02 15:04:05")
+		res, err := stmt.Exec("自动缩容", scale_time, "admin", info, seq, "INFO", "SCALE", appId, 0, "成功")
+		checkErr(err)
+		id, err := res.LastInsertId()
+		fmt.Println(id)
+	}
+}
+
+func checkErr(err error) {
+	if err != nil {
+		fmt.Println(err)
+	}
+}
 
 func _scaleApp(appId string, tasks int, endpoint string, conf *configuration.Configuration) error {
-	b := bytes.NewBufferString("{\"instances\":" + strconv.Itoa(tasks) + "}" )
+	b := bytes.NewBufferString("{\"instances\":" + strconv.Itoa(tasks) + "}")
 	//fmt.Println(b)
 	//fmt.Println(endpoint)
 	//fmt.Println(appId)
-	
+
 	client := &http.Client{}
 	req, _ := http.NewRequest("PUT", endpoint+"/v2/apps"+appId, b)
 	req.Header.Add("Accept", "application/json")
@@ -352,24 +440,23 @@ func _scaleApp(appId string, tasks int, endpoint string, conf *configuration.Con
 	if len(conf.Marathon.User) > 0 && len(conf.Marathon.Password) > 0 {
 		req.SetBasicAuth(conf.Marathon.User, conf.Marathon.Password)
 	}
-	
+
 	resp, err := client.Do(req)
-	
+
 	if err != nil {
 		return err
 	}
-	
+
 	if resp.StatusCode != http.StatusOK {
-    	return fmt.Errorf("Bad HTTP Response: %v", resp.Status)
+		return fmt.Errorf("Bad HTTP Response: %v", resp.Status)
 	}
-	
+
 	defer resp.Body.Close()
 	/*
-	contents, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
+		contents, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return nil, err
+		}
 	*/
 	return nil
 }
-

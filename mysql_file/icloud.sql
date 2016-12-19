@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : 192.168.2.22
+Source Server         : 20.26.25.156
 Source Server Version : 50710
-Source Host           : 192.168.2.22:3366
+Source Host           : 20.26.25.156:3366
 Source Database       : icloud
 
 Target Server Type    : MYSQL
 Target Server Version : 50710
 File Encoding         : 65001
 
-Date: 2016-11-09 19:14:23
+Date: 2016-12-15 09:35:46
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -29,6 +29,10 @@ CREATE TABLE `alarm_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of alarm_log
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for alarm_users
 -- ----------------------------
 DROP TABLE IF EXISTS `alarm_users`;
@@ -36,6 +40,14 @@ CREATE TABLE `alarm_users` (
   `username` varchar(30) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `phonenumber` bigint(15) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of alarm_users
+-- ----------------------------
+INSERT INTO `alarm_users` VALUES ('ZSH', '15158116209');
+INSERT INTO `alarm_users` VALUES ('ZSH', '15158116209');
+INSERT INTO `alarm_users` VALUES ('ZSH', '15158116209');
+INSERT INTO `alarm_users` VALUES ('ZSH', '15158116209');
 
 -- ----------------------------
 -- Table structure for app_deploy
@@ -54,6 +66,10 @@ CREATE TABLE `app_deploy` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of app_deploy
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for app_deploy_log
 -- ----------------------------
 DROP TABLE IF EXISTS `app_deploy_log`;
@@ -63,6 +79,10 @@ CREATE TABLE `app_deploy_log` (
   `slave_ip` varchar(60) DEFAULT NULL,
   `serial_num` varchar(125) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of app_deploy_log
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for balance_config
@@ -84,6 +104,12 @@ CREATE TABLE `balance_config` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of balance_config
+-- ----------------------------
+INSERT INTO `balance_config` VALUES ('SQ3-2F-APV8600-YW-external-02', 'array', 'array', '10.70.21.51', 'array', 'Arr1y.2mcc', 'zaq1#EDC', '2015-11-05 00:28:30', '2', null, null);
+INSERT INTO `balance_config` VALUES ('array-test', 'array', 'array', '10.70.206.133', 'array', 'admin', 'admin', '2015-12-09 14:44:49', '1', null, null);
+
+-- ----------------------------
 -- Table structure for busi_relationship
 -- ----------------------------
 DROP TABLE IF EXISTS `busi_relationship`;
@@ -93,6 +119,10 @@ CREATE TABLE `busi_relationship` (
   `color` varchar(7) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`system_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of busi_relationship
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for cfg_app_public
@@ -119,7 +149,7 @@ CREATE TABLE `cfg_app_public` (
   `username` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `status` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '0',
   `last_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `publish_target` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL COMMENT '发布目标，管理接口对象',
+  `publish_target` varchar(1024) DEFAULT NULL,
   `app_sort` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL COMMENT '应用组',
   `deploy_mode` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL COMMENT '发布构建方式',
   `app_origin` varchar(32) DEFAULT NULL,
@@ -132,9 +162,19 @@ CREATE TABLE `cfg_app_public` (
   `inter_check_url` varchar(1024) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL COMMENT '接口人信息',
   `inter_man` varchar(1024) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL COMMENT '接口人信息',
   `ci_info` varchar(5000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL COMMENT '持续集成信息',
+  `public_vip` varchar(255) DEFAULT NULL,
+  `private_vip` varchar(255) DEFAULT NULL,
+  `ha_ip` varchar(255) DEFAULT NULL,
+  `ha_mode` varchar(255) DEFAULT NULL,
+  `bamboo_mode` varchar(255) DEFAULT NULL,
+  `firewall_conf` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_cfg_app_public` (`env`,`app_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of cfg_app_public
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for cfg_task
@@ -155,47 +195,32 @@ CREATE TABLE `cfg_task` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for cmp
+-- Records of cfg_task
 -- ----------------------------
-DROP TABLE IF EXISTS `cmp`;
-CREATE TABLE `cmp` (
-  `check_time` datetime NOT NULL,
-  `type_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `st` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `remarks` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL
+INSERT INTO `cfg_task` VALUES ('1', '同步Frameworks', 'SYNC', '10 0/5 * * * ?', 'com.icloud.common.task.impl.MesosTask', 'execute', '1', '0', '2016-06-22 09:41:15', '');
+INSERT INTO `cfg_task` VALUES ('2', '同步监控数据', 'SYNC', '0 0 1 1 * ?', 'com.icloud.common.task.impl.MonTask', 'execute', '1', '1', '2016-06-22 09:41:15', '');
+INSERT INTO `cfg_task` VALUES ('3', '同步监控数据statis', 'SYNC', '0 0 1 1 * ?', 'com.icloud.common.task.impl.MonStatisTask', 'execute', '1', '1', '2016-06-22 09:41:15', '');
+INSERT INTO `cfg_task` VALUES ('4', '同步监控数据detail', 'SYNC', '0 0 1 1 * ?', 'com.icloud.common.task.impl.MonDetailTask', 'execute', '1', '1', '2016-06-22 09:41:15', '');
+INSERT INTO `cfg_task` VALUES ('5', '同步监控数据ha', 'SYNC', '0 0 1 1 * ?', 'com.icloud.common.task.impl.MonHaTask', 'execute', '1', '1', '2016-06-22 09:41:15', '');
+INSERT INTO `cfg_task` VALUES ('6', '清理监控历史数据', 'SYNC', '*/30 0/10 * * * ?', 'com.icloud.common.task.impl.ClearMonHisTask', 'execute', '1', '0', '2016-06-22 09:41:15', '');
+
+-- ----------------------------
+-- Table structure for cluster_mon_detail
+-- ----------------------------
+DROP TABLE IF EXISTS `cluster_mon_detail`;
+CREATE TABLE `cluster_mon_detail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cluster_name` varchar(255) DEFAULT NULL,
+  `sum_cpu` varchar(64) DEFAULT NULL,
+  `sum_mem` varchar(64) DEFAULT NULL,
+  `cls_id` varchar(128) NOT NULL,
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for cmp_haproxy_frw
+-- Records of cluster_mon_detail
 -- ----------------------------
-DROP TABLE IF EXISTS `cmp_haproxy_frw`;
-CREATE TABLE `cmp_haproxy_frw` (
-  `check_time` datetime NOT NULL,
-  `frw_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `st` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Table structure for cmp_haproxy_frw_dtl
--- ----------------------------
-DROP TABLE IF EXISTS `cmp_haproxy_frw_dtl`;
-CREATE TABLE `cmp_haproxy_frw_dtl` (
-  `frw_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `check_time` datetime NOT NULL,
-  `haproxy_host` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `app_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `haproxy_port` int(5) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Table structure for cmp_inst_state
--- ----------------------------
-DROP TABLE IF EXISTS `cmp_inst_state`;
-CREATE TABLE `cmp_inst_state` (
-  `type_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `check_time` datetime DEFAULT NULL,
-  `ip` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for container_alarm_data
@@ -210,6 +235,10 @@ CREATE TABLE `container_alarm_data` (
   `alarm_time` decimal(4,1) DEFAULT NULL,
   `container_thread_run` decimal(5,1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of container_alarm_data
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for container_current_data
@@ -230,6 +259,10 @@ CREATE TABLE `container_current_data` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of container_current_data
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for container_resource
 -- ----------------------------
 DROP TABLE IF EXISTS `container_resource`;
@@ -246,6 +279,10 @@ CREATE TABLE `container_resource` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of container_resource
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for container_thread_history
 -- ----------------------------
 DROP TABLE IF EXISTS `container_thread_history`;
@@ -259,6 +296,10 @@ CREATE TABLE `container_thread_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of container_thread_history
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for cpu_his_used
 -- ----------------------------
 DROP TABLE IF EXISTS `cpu_his_used`;
@@ -270,6 +311,10 @@ CREATE TABLE `cpu_his_used` (
   PRIMARY KEY (`seq`),
   KEY `idx_cpu_his_used` (`time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of cpu_his_used
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for datacenter
@@ -291,6 +336,10 @@ CREATE TABLE `datacenter` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of datacenter
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for datacenter_configure
 -- ----------------------------
 DROP TABLE IF EXISTS `datacenter_configure`;
@@ -301,6 +350,10 @@ CREATE TABLE `datacenter_configure` (
   `data_dimension` int(1) DEFAULT NULL,
   `configure_status` int(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of datacenter_configure
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for dcos_api_bamboo
@@ -326,6 +379,10 @@ CREATE TABLE `dcos_api_bamboo` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_dcos_api_bamboo_1` (`ip`,`port`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of dcos_api_bamboo
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for dcos_api_manage
@@ -354,6 +411,10 @@ CREATE TABLE `dcos_api_manage` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of dcos_api_manage
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for dcos_apps
 -- ----------------------------
 DROP TABLE IF EXISTS `dcos_apps`;
@@ -369,6 +430,10 @@ CREATE TABLE `dcos_apps` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_dcos_apps_1` (`app_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of dcos_apps
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for dcos_apps_version
@@ -397,6 +462,10 @@ CREATE TABLE `dcos_apps_version` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of dcos_apps_version
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for dcos_app_mapi
 -- ----------------------------
 DROP TABLE IF EXISTS `dcos_app_mapi`;
@@ -405,6 +474,10 @@ CREATE TABLE `dcos_app_mapi` (
   `mid` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT 'DCOS_API_MANAGE.ID',
   PRIMARY KEY (`app_id`,`mid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of dcos_app_mapi
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for dcos_app_package_store
@@ -423,6 +496,10 @@ CREATE TABLE `dcos_app_package_store` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
+-- Records of dcos_app_package_store
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for dcos_autoscale_logs
 -- ----------------------------
 DROP TABLE IF EXISTS `dcos_autoscale_logs`;
@@ -432,6 +509,10 @@ CREATE TABLE `dcos_autoscale_logs` (
   `app_id` varchar(100) NOT NULL,
   `message` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of dcos_autoscale_logs
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for dcos_autoscale_policy
@@ -447,6 +528,10 @@ CREATE TABLE `dcos_autoscale_policy` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of dcos_autoscale_policy
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for dcos_autoscale_policy_copy
 -- ----------------------------
 DROP TABLE IF EXISTS `dcos_autoscale_policy_copy`;
@@ -460,6 +545,10 @@ CREATE TABLE `dcos_autoscale_policy_copy` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of dcos_autoscale_policy_copy
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for dcos_bapi_mapi
 -- ----------------------------
 DROP TABLE IF EXISTS `dcos_bapi_mapi`;
@@ -470,11 +559,16 @@ CREATE TABLE `dcos_bapi_mapi` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of dcos_bapi_mapi
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for dcos_cluster
 -- ----------------------------
 DROP TABLE IF EXISTS `dcos_cluster`;
 CREATE TABLE `dcos_cluster` (
   `id` varchar(255) NOT NULL,
+  `type` varchar(32) DEFAULT NULL,
   `name` varchar(255) NOT NULL DEFAULT '',
   `label` varchar(255) NOT NULL DEFAULT '',
   `run_status` varchar(10) NOT NULL DEFAULT '0',
@@ -482,11 +576,18 @@ CREATE TABLE `dcos_cluster` (
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   `remark` varchar(255) DEFAULT NULL,
-  `resp_id` varchar(255) DEFAULT NULL COMMENT '依赖的资源池id',
+  `master_id` varchar(255) DEFAULT NULL COMMENT '依赖的master集群id',
   `create_user` varchar(255) DEFAULT NULL COMMENT '创建者',
-  `step` varchar(32) DEFAULT NULL,
+  `step` varchar(255) DEFAULT NULL,
+  `zk_str` varchar(255) DEFAULT NULL,
+  `mesos_str` varchar(255) DEFAULT NULL,
+  `marathon_str` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of dcos_cluster
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for dcos_cluster_host
@@ -507,6 +608,10 @@ CREATE TABLE `dcos_cluster_host` (
   `run_status` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of dcos_cluster_host
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for dcos_container_instance
@@ -534,12 +639,15 @@ CREATE TABLE `dcos_container_instance` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of dcos_container_instance
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for dcos_host
 -- ----------------------------
 DROP TABLE IF EXISTS `dcos_host`;
 CREATE TABLE `dcos_host` (
   `id` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `type` varchar(256) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL COMMENT '暂时无用',
   `label` varchar(256) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL COMMENT '暂时无用',
   `ip_addr` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `cpus` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
@@ -549,11 +657,14 @@ CREATE TABLE `dcos_host` (
   `status` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '0',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime DEFAULT NULL,
-  `resp_id` varchar(255) DEFAULT NULL COMMENT '如果是资源池相关主机，该字段指向dcos_res_pool的id',
-  `cls_id` varchar(255) DEFAULT NULL COMMENT '如果是集群相关主机，改字段指向dcos_cluster的id',
+  `cls_id` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`,`ip_addr`),
-  UNIQUE KEY `idx_dcos_host_1` (`ip_addr`)
+  UNIQUE KEY `idx_dcos_host_1` (`ip_addr`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of dcos_host
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for dcos_host_serv
@@ -572,6 +683,10 @@ CREATE TABLE `dcos_host_serv` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of dcos_host_serv
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for dcos_mapi_cluster
 -- ----------------------------
 DROP TABLE IF EXISTS `dcos_mapi_cluster`;
@@ -580,6 +695,10 @@ CREATE TABLE `dcos_mapi_cluster` (
   `gid` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`mid`,`gid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of dcos_mapi_cluster
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for dcos_mon_phones
@@ -593,6 +712,10 @@ CREATE TABLE `dcos_mon_phones` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of dcos_mon_phones
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for dcos_mon_phones_app_rela
 -- ----------------------------
 DROP TABLE IF EXISTS `dcos_mon_phones_app_rela`;
@@ -600,6 +723,10 @@ CREATE TABLE `dcos_mon_phones_app_rela` (
   `contact_name` varchar(20) NOT NULL,
   `app_id` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of dcos_mon_phones_app_rela
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for dcos_res_pool
@@ -622,6 +749,10 @@ CREATE TABLE `dcos_res_pool` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of dcos_res_pool
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for dcos_user_cluster
 -- ----------------------------
 DROP TABLE IF EXISTS `dcos_user_cluster`;
@@ -630,6 +761,10 @@ CREATE TABLE `dcos_user_cluster` (
   `gid` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`username`,`gid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of dcos_user_cluster
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for dockerfile
@@ -649,6 +784,26 @@ CREATE TABLE `dockerfile` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of dockerfile
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for edgebox_user
+-- ----------------------------
+DROP TABLE IF EXISTS `edgebox_user`;
+CREATE TABLE `edgebox_user` (
+  `user_name` varchar(50) NOT NULL,
+  `password` varchar(50) NOT NULL,
+  `status` int(1) NOT NULL,
+  `comment` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`user_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of edgebox_user
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for haproxy_current_data
 -- ----------------------------
 DROP TABLE IF EXISTS `haproxy_current_data`;
@@ -666,6 +821,10 @@ CREATE TABLE `haproxy_current_data` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of haproxy_current_data
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for haproxy_history_data
 -- ----------------------------
 DROP TABLE IF EXISTS `haproxy_history_data`;
@@ -676,6 +835,10 @@ CREATE TABLE `haproxy_history_data` (
   `total_session_scur` int(6) DEFAULT NULL,
   PRIMARY KEY (`seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of haproxy_history_data
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for hosts_mon_detail
@@ -692,7 +855,27 @@ CREATE TABLE `hosts_mon_detail` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ip` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=224985 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=807251 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of hosts_mon_detail
+-- ----------------------------
+INSERT INTO `hosts_mon_detail` VALUES ('807235', '24', '53', '0', '12288', '9456', '8875', '2016-12-14 18:00:41', '192.168.2.23');
+INSERT INTO `hosts_mon_detail` VALUES ('807236', '26', '25', '0', '0', '16647', '17972', '2016-12-14 18:00:41', '192.168.2.24');
+INSERT INTO `hosts_mon_detail` VALUES ('807237', '32', '30', '0', '16384', '832', '210', '2016-12-14 18:00:41', '192.168.2.26');
+INSERT INTO `hosts_mon_detail` VALUES ('807238', '38', '33', '245760', '17408', '422', '0', '2016-12-14 18:00:41', '192.168.2.27');
+INSERT INTO `hosts_mon_detail` VALUES ('807239', '25', '53', '0', '12288', '9244', '9030', '2016-12-14 18:01:11', '192.168.2.23');
+INSERT INTO `hosts_mon_detail` VALUES ('807240', '25', '25', '0', '0', '16728', '17939', '2016-12-14 18:01:11', '192.168.2.24');
+INSERT INTO `hosts_mon_detail` VALUES ('807241', '32', '30', '278528', '0', '816', '210', '2016-12-14 18:01:11', '192.168.2.26');
+INSERT INTO `hosts_mon_detail` VALUES ('807242', '38', '33', '8351744', '650752', '346', '0', '2016-12-14 18:01:11', '192.168.2.27');
+INSERT INTO `hosts_mon_detail` VALUES ('807243', '25', '53', '0', '4096', '8911', '8842', '2016-12-14 18:01:41', '192.168.2.23');
+INSERT INTO `hosts_mon_detail` VALUES ('807244', '24', '25', '0', '0', '16468', '17612', '2016-12-14 18:01:41', '192.168.2.24');
+INSERT INTO `hosts_mon_detail` VALUES ('807245', '31', '30', '1978368', '24576', '468', '210', '2016-12-14 18:01:41', '192.168.2.26');
+INSERT INTO `hosts_mon_detail` VALUES ('807246', '36', '33', '8364032', '1936384', '362', '0', '2016-12-14 18:01:41', '192.168.2.27');
+INSERT INTO `hosts_mon_detail` VALUES ('807247', '25', '53', '0', '20480', '9856', '11927', '2016-12-14 18:02:11', '192.168.2.23');
+INSERT INTO `hosts_mon_detail` VALUES ('807248', '24', '25', '0', '0', '16341', '17709', '2016-12-14 18:02:11', '192.168.2.24');
+INSERT INTO `hosts_mon_detail` VALUES ('807249', '30', '30', '1699840', '49152', '714', '210', '2016-12-14 18:02:11', '192.168.2.26');
+INSERT INTO `hosts_mon_detail` VALUES ('807250', '35', '33', '12288', '1363968', '332', '0', '2016-12-14 18:02:11', '192.168.2.27');
 
 -- ----------------------------
 -- Table structure for image_info
@@ -712,6 +895,10 @@ CREATE TABLE `image_info` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of image_info
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for image_version_info
 -- ----------------------------
 DROP TABLE IF EXISTS `image_version_info`;
@@ -729,6 +916,26 @@ CREATE TABLE `image_version_info` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of image_version_info
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for img_autoreleases
+-- ----------------------------
+DROP TABLE IF EXISTS `img_autoreleases`;
+CREATE TABLE `img_autoreleases` (
+  `id` int(32) NOT NULL AUTO_INCREMENT,
+  `app_id` varchar(32) DEFAULT NULL,
+  `image_name` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of img_autoreleases
+-- ----------------------------
+INSERT INTO `img_autoreleases` VALUES ('40', 'basic_app_id_', 'basic_image_name_');
+
+-- ----------------------------
 -- Table structure for jenkins_ci
 -- ----------------------------
 DROP TABLE IF EXISTS `jenkins_ci`;
@@ -741,6 +948,19 @@ CREATE TABLE `jenkins_ci` (
   `LOGLIST` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`JENKINSCIID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of jenkins_ci
+-- ----------------------------
+INSERT INTO `jenkins_ci` VALUES ('7', 'tomcat', '0', '2016-06-23 09:42:22', '2016-06-23 09:42:22', null);
+INSERT INTO `jenkins_ci` VALUES ('20', 'sjyyt-web', '0', '2016-06-25 09:49:00', '2016-06-25 09:49:00', null);
+INSERT INTO `jenkins_ci` VALUES ('24', 'demo', '0', '2016-06-27 11:18:00', '2016-06-27 11:18:00', null);
+INSERT INTO `jenkins_ci` VALUES ('25', 'www', '0', '2016-06-27 11:18:00', '2016-06-27 11:18:00', null);
+INSERT INTO `jenkins_ci` VALUES ('26', 'www', '0', '2016-06-27 11:18:00', '2016-06-27 11:18:00', null);
+INSERT INTO `jenkins_ci` VALUES ('27', 'foxx000', '0', '2016-06-27 11:18:00', '2016-06-27 11:18:00', null);
+INSERT INTO `jenkins_ci` VALUES ('28', 'foxx000', '0', '2016-06-27 11:18:00', '2016-06-27 11:18:00', null);
+INSERT INTO `jenkins_ci` VALUES ('29', 'foxx000', '0', '2016-06-27 11:18:00', '2016-06-27 11:18:00', null);
+INSERT INTO `jenkins_ci` VALUES ('30', 'foxx001', '0', '2016-06-27 11:18:00', '2016-06-27 11:18:00', null);
 
 -- ----------------------------
 -- Table structure for jenkins_task
@@ -761,6 +981,18 @@ CREATE TABLE `jenkins_task` (
 ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of jenkins_task
+-- ----------------------------
+INSERT INTO `jenkins_task` VALUES ('20', 'sjyyt-web', 'None', 'None', 'None', '0', '0', '0', '2016-06-27 18:08:12', '2016-06-27 18:08:12');
+INSERT INTO `jenkins_task` VALUES ('24', 'demo', 'None', 'None', 'None', '0', '0', '0', '2016-06-27 17:43:45', '2016-06-27 17:43:45');
+INSERT INTO `jenkins_task` VALUES ('25', 'www', 'None', 'None', 'None', '0', '0', '0', '2016-06-27 18:34:24', '2016-06-27 18:34:24');
+INSERT INTO `jenkins_task` VALUES ('26', 'www', 'None', 'None', 'None', '0', '0', '0', '2016-06-27 18:50:28', '2016-06-27 18:50:28');
+INSERT INTO `jenkins_task` VALUES ('27', 'foxx000', 'None', 'None', 'None', '0', '0', '0', '2016-06-27 18:54:30', '2016-06-27 18:54:30');
+INSERT INTO `jenkins_task` VALUES ('28', 'foxx000', 'None', 'None', 'None', '0', '0', '0', '2016-06-27 18:56:41', '2016-06-27 18:56:41');
+INSERT INTO `jenkins_task` VALUES ('29', 'foxx000', 'None', 'None', 'None', '0', '0', '0', '2016-06-27 19:00:55', '2016-06-27 19:00:55');
+INSERT INTO `jenkins_task` VALUES ('30', 'foxx001', 'None', 'None', 'None', '0', '0', '0', '2016-06-27 19:03:03', '2016-06-27 19:03:03');
+
+-- ----------------------------
 -- Table structure for marathon_current_data
 -- ----------------------------
 DROP TABLE IF EXISTS `marathon_current_data`;
@@ -771,6 +1003,10 @@ CREATE TABLE `marathon_current_data` (
   `marathon_mem` bigint(10) DEFAULT NULL,
   `marathon_cpu` bigint(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of marathon_current_data
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for marathon_data
@@ -785,6 +1021,10 @@ CREATE TABLE `marathon_data` (
   `marathon_cpu` bigint(10) DEFAULT NULL,
   PRIMARY KEY (`cluster_runtime_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of marathon_data
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for mesos_current_data
@@ -810,6 +1050,10 @@ CREATE TABLE `mesos_current_data` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of mesos_current_data
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for mesos_data
 -- ----------------------------
 DROP TABLE IF EXISTS `mesos_data`;
@@ -833,6 +1077,10 @@ CREATE TABLE `mesos_data` (
   `tasks_staging` decimal(30,1) DEFAULT NULL,
   PRIMARY KEY (`cluster_runtime_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of mesos_data
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for mon_app_detail
@@ -868,6 +1116,10 @@ CREATE TABLE `mon_app_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of mon_app_detail
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for mon_app_statis
 -- ----------------------------
 DROP TABLE IF EXISTS `mon_app_statis`;
@@ -893,6 +1145,10 @@ CREATE TABLE `mon_app_statis` (
   KEY `idx_mon_app_statis_2` (`create_time`),
   KEY `idx_mon_app_statis_1` (`cluster_id`,`host_id`,`app_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of mon_app_statis
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for mon_dcos
@@ -923,6 +1179,10 @@ CREATE TABLE `mon_dcos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of mon_dcos
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for mon_ha_detail
 -- ----------------------------
 DROP TABLE IF EXISTS `mon_ha_detail`;
@@ -947,6 +1207,27 @@ CREATE TABLE `mon_ha_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of mon_ha_detail
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for nginx
+-- ----------------------------
+DROP TABLE IF EXISTS `nginx`;
+CREATE TABLE `nginx` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ip` varchar(255) DEFAULT NULL COMMENT 'nginx ip ',
+  `port` int(11) DEFAULT '81' COMMENT '默认 81',
+  `type` int(11) DEFAULT '0' COMMENT '0 ：程序包下载地址',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of nginx
+-- ----------------------------
+INSERT INTO `nginx` VALUES ('1', '192.168.2.24', '81', '0');
+
+-- ----------------------------
 -- Table structure for rel
 -- ----------------------------
 DROP TABLE IF EXISTS `rel`;
@@ -959,6 +1240,10 @@ CREATE TABLE `rel` (
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of rel
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for restful_api
@@ -980,39 +1265,8 @@ CREATE TABLE `restful_api` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for scale_log
+-- Records of restful_api
 -- ----------------------------
-DROP TABLE IF EXISTS `scale_log`;
-CREATE TABLE `scale_log` (
-  `app_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `scale_time` varchar(14) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `scale_type` varchar(3) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `old_num` decimal(22,0) DEFAULT NULL,
-  `new_num` decimal(22,0) DEFAULT NULL,
-  `alt_type` varchar(10) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `alt_value` decimal(22,0) DEFAULT NULL,
-  `alt_time` varchar(14) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  PRIMARY KEY (`app_id`,`scale_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Table structure for scale_rule
--- ----------------------------
-DROP TABLE IF EXISTS `scale_rule`;
-CREATE TABLE `scale_rule` (
-  `rule_type` varchar(10) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `app_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `rule_num` decimal(22,0) DEFAULT NULL,
-  `rep_time` decimal(22,0) DEFAULT NULL,
-  `scale_out` decimal(22,0) DEFAULT NULL,
-  `scale_in` decimal(22,0) DEFAULT NULL,
-  `scale_init` decimal(22,0) DEFAULT NULL,
-  `scale_max` decimal(22,0) DEFAULT NULL,
-  `scale_inc` decimal(22,0) DEFAULT NULL,
-  `obl_value` decimal(22,0) DEFAULT NULL,
-  `threshold` decimal(22,0) DEFAULT NULL,
-  PRIMARY KEY (`rule_type`,`app_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for script_store
@@ -1037,6 +1291,10 @@ CREATE TABLE `script_store` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of script_store
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for security_verify
 -- ----------------------------
 DROP TABLE IF EXISTS `security_verify`;
@@ -1045,6 +1303,14 @@ CREATE TABLE `security_verify` (
   `security_verify_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `security_verify_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of security_verify
+-- ----------------------------
+INSERT INTO `security_verify` VALUES ('11111', '重启服务器', '1qaz2wsx');
+INSERT INTO `security_verify` VALUES ('99999', '关闭数据中心', '1qaz2wsx');
+INSERT INTO `security_verify` VALUES ('11111', '重启服务器', '1qaz2wsx');
+INSERT INTO `security_verify` VALUES ('99999', '关闭数据中心', '1qaz2wsx');
 
 -- ----------------------------
 -- Table structure for services
@@ -1074,6 +1340,10 @@ CREATE TABLE `services` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of services
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for service_directory
 -- ----------------------------
 DROP TABLE IF EXISTS `service_directory`;
@@ -1088,6 +1358,10 @@ CREATE TABLE `service_directory` (
   `comments` varchar(200) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`service_directory_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of service_directory
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for service_level
@@ -1108,6 +1382,10 @@ CREATE TABLE `service_level` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of service_level
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for service_level_list
 -- ----------------------------
 DROP TABLE IF EXISTS `service_level_list`;
@@ -1116,6 +1394,10 @@ CREATE TABLE `service_level_list` (
   `service_id` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`level_id`,`service_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of service_level_list
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for slave_node_type
@@ -1127,6 +1409,14 @@ CREATE TABLE `slave_node_type` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of slave_node_type
+-- ----------------------------
+INSERT INTO `slave_node_type` VALUES ('Web', 'web');
+INSERT INTO `slave_node_type` VALUES ('App', 'app');
+INSERT INTO `slave_node_type` VALUES ('Web', 'web');
+INSERT INTO `slave_node_type` VALUES ('App', 'app');
+
+-- ----------------------------
 -- Table structure for sys_app_type
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_app_type`;
@@ -1135,6 +1425,13 @@ CREATE TABLE `sys_app_type` (
   `subsystem` varchar(20) DEFAULT NULL,
   `app` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_app_type
+-- ----------------------------
+INSERT INTO `sys_app_type` VALUES ('crm', 'scrm', 'web');
+INSERT INTO `sys_app_type` VALUES ('crm', 'ncrm', 'app');
+INSERT INTO `sys_app_type` VALUES ('crm', 'scrm', 'app');
 
 -- ----------------------------
 -- Table structure for sys_attach
@@ -1156,6 +1453,10 @@ CREATE TABLE `sys_attach` (
   PRIMARY KEY (`id`),
   KEY `idx_sys_attach` (`disk_filename`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_attach
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_base_data
@@ -1182,6 +1483,39 @@ CREATE TABLE `sys_base_data` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of sys_base_data
+-- ----------------------------
+INSERT INTO `sys_base_data` VALUES ('1464900395188', '', 'CFG_MESOS', '', '192.168.2.23:2181', 'mesos', 'dcosadmin', 'zjdcos01', 'v2', null, null, '', '', '', '', '');
+INSERT INTO `sys_base_data` VALUES ('1467971721227', null, 'APP_SORT', null, 'addapps', '测试应用组', 'null', null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('1468229272129', null, 'CFG_MESOS', null, '192.168.2.51:2181,192.168.2.54:2181,192.168.2.56:2181', 'mesos', 'dcosadmin', 'zjdcos01', 'v2', null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('1468229422145', null, 'CFG_MESOS', null, '192.168.2.186:2181', 'mesos', 'dcosadmin', 'zjdcos01', 'v2', null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('IDS', null, 'IDS', null, 'LAST_ID', '1468229492149', 'UNLOCK', null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('ao101', null, 'APP_ORIGIN', null, '1', '服务器下载', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('ao102', null, 'APP_ORIGIN', null, '2', '本地上传', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('ao103', null, 'APP_ORIGIN', null, '3', '持续集成', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('as101', null, 'APP_SORT', null, 'sjyyt', '手机营业厅', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('as102', null, 'APP_SORT', null, 'scrm', '营业厅', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('c101', null, 'CODE_REPO_TYPE', null, 'git', 'Git', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('c102', null, 'CODE_REPO_TYPE', null, 'svn', 'SVN', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('c103', null, 'CODE_REPO_TYPE', null, 'cvs', 'CVS', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('dm101', null, 'DEPLOY_MODE', null, '1', '挂载程序包', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('dm102', null, 'DEPLOY_MODE', null, '2', '镜像上传', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('e101', null, 'ENV_TYPE', null, 'yf', '研发', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('e102', null, 'ENV_TYPE', null, 'cs', '测试', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('e103', null, 'ENV_TYPE', null, 'sc', '生产', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('mw101', null, 'MW_NAME', null, 'tomcat', 'TOMCAT', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('mw102', null, 'MW_NAME', null, 'weblogic', 'WEBLOGIC', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('os101', null, 'OS_NAME', null, 'centos', 'CENTOS', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('os102', null, 'OS_NAME', null, 'redhat', 'REDHAT', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('rp101', null, 'RULE_TYPE', null, 'thread', 'thread', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('rp102', null, 'RULE_TYPE', null, 'cpu', 'cpu', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('rp103', null, 'RULE_TYPE', null, 'memory', 'memory', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('ul101', null, 'USER_LEVEL', null, '1', '二级管理员', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('ul102', null, 'USER_LEVEL', null, '2', '普通租户', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('ut101', null, 'USER_TYPE', null, '1', '平台用户', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `sys_base_data` VALUES ('ut102', null, 'USER_TYPE', null, '2', '应用用户', null, null, null, null, null, null, null, null, null, null);
+
+-- ----------------------------
 -- Table structure for sys_data_permission
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_data_permission`;
@@ -1191,6 +1525,10 @@ CREATE TABLE `sys_data_permission` (
   `display_status` varchar(32) DEFAULT '1',
   PRIMARY KEY (`username`,`service_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_data_permission
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_log
@@ -1214,6 +1552,10 @@ CREATE TABLE `sys_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of sys_log
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sys_log_copy
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_log_copy`;
@@ -1235,6 +1577,10 @@ CREATE TABLE `sys_log_copy` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of sys_log_copy
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sys_log_login
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_log_login`;
@@ -1245,6 +1591,10 @@ CREATE TABLE `sys_log_login` (
   `mac` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   KEY `idx_sys_log_login` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_log_login
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -1267,6 +1617,79 @@ CREATE TABLE `sys_menu` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of sys_menu
+-- ----------------------------
+INSERT INTO `sys_menu` VALUES ('1460796903659', 'g', '发布', 'FTP文件中转方式发布', '/iCloud/view/publishFtp.html', '2', 'g03', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1461062896045', '', '集群管理', '集群管理', '#', '1', 'h', 'fa-th', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1464146417844', 'c', '应用列表', '应用列表', '/iCloud/view/appManage/appList.html', '2', 'a01', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1464163251216', '', '镜像管理', '镜像管理', '/iCloud/view/cluster/clusterList.html', '1', 'r', 'list-group-item active', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1464163313088', 'c', '镜像仓库', '镜像仓库', '/iCloud/view/repository/repositoryAddDel.html', '2', 'f03', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1464164232062', '', '多多视角', '集群视角，服务栈视角，应用视角，主机视角，容器视角', '#', '1', 'v', 'list-group-item active', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1464164288079', '1464164232062', '集群视角', '集群角度监控管理', '/iCloud/view/viewAngle/group.html', '2', 'v11', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1464164331221', '1464164232062', '应用视角', '应用角度监控管理', '/iCloud/view/viewAngle/application.html', '2', 'v15', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1464164645347', '1464164232062', '主机视角', '主机角度监控管理', '/iCloud/view/viewAngle/host.html', '2', 'v17', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1464164697746', '1464164232062', '容器视角', '容器角度监控管理', '/iCloud/view/viewAngle/container.html', '2', 'v19', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1464164774136', '1464164232062', '服务栈视角', '服务栈角度监控管理', '/iCloud/view/viewAngle/serviceStack.html', '2', 'v13', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1466749619970', 'e', '二级用户管理', '普通租户签发', '/iCloud/view/secUserManage.html', '2', '', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1466997384252', 'c', '程序仓库', '程序包发布', '/iCloud/view/appPackageManage.html', '2', 'c05', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1467507288825', '', 'woyuchengying', '', '/icloud', '1', '', 'list-group-item', '', '', '1', '');
+INSERT INTO `sys_menu` VALUES ('1467873200623', 'f', '配置版本', '应用配置版本', '/iCloud/view/cfgAppPublicVersion.html', '2', 'c02', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1468146363380', '', '监控告警', '监控告警', '#', '1', 'c', 'fa-tachometer', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1468146364989', '', '日志管理', '日志管理', '#', '1', 'd', 'fa-list-alt', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1468216027930', 'f', '应用迁移', '应用迁移', '/iCloud/view/migration/migration.html', '2', 'c123', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1468222951497', '1468146363380', '告警维护', '告警维护', '/iCloud/view/alarm/alarm.html', '2', 'C999', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1468223031505', '1468146363380', '监控日志', '', '/iCloud/view/monAlarm/monAlarm.html', '2', '', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1468223061508', '1461062896045', '集群管理', '集群管理子菜单', '/iCloud/view/cluster/clusterList.html', '2', '1', 'menu', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1468223071509', '', '任务管理', '任务管理', '#', '1', 't', 'fa-tasks', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1468223071510', 'c', '短时任务', '短时任务', '/iCloud/view/task/shortTask2.html', '2', 'c01', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1468223121514', 'c', '应用配置', '应用管理租户视角配置菜单', '/iCloud/view/user/cfgAppPublic.html', '2', 'd08', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1468223441546', 'c', '弹性配置', '弹性配置新', '/iCloud/view/copyscaleRule.html', '2', 'd01', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1468223601564', '', '服务集成', '服务集成包括mysql   kafka   redis', '#', '1', 'g', 'fa-tasks', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1468223601565', 'c', '服务集成', '服务集成子菜单', '/iCloud/view/clusterservice/index.html', '2', 'c02', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1468223691595', 'c', '网络管理', '用于管理网络', '/iCloud/view/NKVM/Network.html', '2', 'e99', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1468223701572', 'c', '有状态应用', '用于网络存储管理', '/iCloud/view/NKVM/applist.html', '2', 'b88', 'menu-text', '', '', '1', '');
+INSERT INTO `sys_menu` VALUES ('1468224061608', 'c', '策略管理', '策略管理', '/iCloud/view/appwarning/warninglist.html', '2', 'g08', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('1468224101612', '1468146364989', '日志查询', '日志查询功能', '/iCloud/view/appLog/appLog.html', '2', 'd08', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('41', 'f', '平台恢复', '平台常用恢复功能', '/iCloud/view/command.html', '2', 'f04', 'menu-text', null, null, '0', null);
+INSERT INTO `sys_menu` VALUES ('61', 'f', '大屏幕监控', '大屏幕监控', '/iCloud/view/dashboardBig2.html', '2', 'f04', 'menu-text', null, null, '0', null);
+INSERT INTO `sys_menu` VALUES ('82', 'g', '应用创建', '应用发布和再发布', '/iCloud/view/publish.html', '2', 'g03', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('c', '', '应用管理', '应用管理', '#', '1', 'a', 'fa-tasks', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('c01', 'c', '应用列表', '应用列表', '/iCloud/view/services.html', '2', 'c01', 'menu-text', null, null, '0', null);
+INSERT INTO `sys_menu` VALUES ('c02', 'c', '服务模板', '服务模板', '/iCloud/view/serviceDirectory.html', '2', 'c02', 'menu-text', null, null, '0', null);
+INSERT INTO `sys_menu` VALUES ('c03', 'c', '容器模板', '容器模板', '/iCloud/view/containerResource.html', '2', 'c03', 'menu-text', null, null, '0', null);
+INSERT INTO `sys_menu` VALUES ('c04', 'c', '服务扩缩容', '扩容缩容', '/iCloud/view/servicesScale.html', '2', 'c04', 'menu-text', null, null, '0', null);
+INSERT INTO `sys_menu` VALUES ('c05', 'c', '服务重启', '服务启停', '/iCloud/view/servicesRestart.html', '2', 'c05', 'menu-text', null, null, '0', null);
+INSERT INTO `sys_menu` VALUES ('c06', 'c', '应用配置', '应用发布配置', '/iCloud/view/cfgAppPublic.html', '2', 'f06', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('c07', 'c', '弹性配置旧', '弹性扩缩策略配置', '/iCloud/view/scaleRule.html', '2', 'f07', 'menu-text', '', '', '1', '');
+INSERT INTO `sys_menu` VALUES ('d', '', '性能管理', '性能管理', '#', '1', 'b', 'fa-hdd-o', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('d01', 'd', '容器性能', '容器性能', '/iCloud/view/containerPerformance.html', '2', 'd01', 'menu-text', null, null, '0', null);
+INSERT INTO `sys_menu` VALUES ('d02', 'd', '路由性能', '路由性能', '/iCloud/view/haproxyPerformance.html', '2', 'd02', 'menu-text', null, null, '0', null);
+INSERT INTO `sys_menu` VALUES ('d03', '1468146363380', '监控管理', '监控', '/iCloud/view/frameForMonitor.html', '2', 'd03', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('d04', '1468146363380', '告警管理', '告警管理', '/iCloud/view/frameForIcinga.html', '2', 'd04', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('d05', '1468146364989', '统一日志', '统一日志', '/iCloud/view/frameForGraylog.html', '2', 'd05', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('d06', '1468146364989', '平台日志', '平台日志', '/iCloud/view/platformLogV4.html', '2', 'd06', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('d07', 'd', '应用日志', '应用日志', '/iCloud/view/downloadLog.html', '2', 'd07', 'menu-text', null, null, '0', null);
+INSERT INTO `sys_menu` VALUES ('d08', 'd', 'HAProxy性能', 'HAProxy性能', '/iCloud/view/haproxyPerformance2.html', '2', 'd08', 'menu-text', null, null, '0', null);
+INSERT INTO `sys_menu` VALUES ('d09', 'd', '弹性扩缩日志', '弹性扩缩日志', '/iCloud/view/scaleLog.html', '2', 'd09', 'menu-text', null, null, '0', null);
+INSERT INTO `sys_menu` VALUES ('e', '', '用户管理', '用户管理', '#', '1', 's', 'fa-user', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('e01', 'e', '用户列表', '用户列表', '/iCloud/view/userManage.html', '2', 'e01', 'menu-text', null, null, '0', null);
+INSERT INTO `sys_menu` VALUES ('e02', 'e', '角色管理', '角色管理', '/iCloud/view/roleManage.html', '2', 'e02', 'menu-text', null, null, '0', null);
+INSERT INTO `sys_menu` VALUES ('e03', 'f', '功能模块', '功能模块管理', '/iCloud/view/menuManage.html', '2', 'e03', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('f', '', '平台配置', '平台配置', '#', '1', 'z', 'fa-gears', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('f02', 'f', 'Marathon配置', 'Marathon配置', '/iCloud/view/restfulApi.html', '2', 'f02', 'menu-text', null, null, '0', null);
+INSERT INTO `sys_menu` VALUES ('f04', 'f', 'Slave节点扩缩', 'Slave节点扩缩', '/iCloud/view/slaveNodeManage.html', '2', 'f04', 'menu-text', null, null, '0', null);
+INSERT INTO `sys_menu` VALUES ('f05', 'f', '基础数据', '基础数据维护', '/iCloud/view/baseData.html', '2', 'f05', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('f08', 'f', '模型对象', '模型对象配置', '/iCloud/view/settings/model.html', '2', 'f08', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('f09', 'f', '服务发现配置', '服务发现配置', '/iCloud/view/settings/service.html', '2', 'f09', 'menu-text', null, null, '0', null);
+INSERT INTO `sys_menu` VALUES ('f10', 'f', '管理接口', '管理接口配置', '/iCloud/view/settings/interface.html', '2', 'f10', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('f11', 'f', '应用显示', '应用显示配置', '/iCloud/view/appDisplayNum.html', '2', 'f11', 'menu-text', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('g', null, '持续集成', '持续集成', '#', '1', 'cg', 'list-group-item active', null, null, '0', null);
+INSERT INTO `sys_menu` VALUES ('g01', 'g', '集成', 'Jenkins', '/iCloud/view/jenkins2.html', '2', 'g01', 'menu-text', null, null, '0', null);
+INSERT INTO `sys_menu` VALUES ('g02', 'g', '测试', 'Jmeter', '/iCloud/view/jmeter.html', '2', 'g02', 'menu-text', null, null, '0', null);
+INSERT INTO `sys_menu` VALUES ('s', '', '统计报表', '', '#', '1', 'e', 'fa-bar-chart-o', '', '', '0', '');
+INSERT INTO `sys_menu` VALUES ('s01', 's', '资源统计报表', '', '/iCloud/view/report/appReport.html', '2', 's01', 'menu-text', '', '', '0', '');
+
+-- ----------------------------
 -- Table structure for sys_mo
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_mo`;
@@ -1276,6 +1699,18 @@ CREATE TABLE `sys_mo` (
   `name` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_mo
+-- ----------------------------
+INSERT INTO `sys_mo` VALUES ('1', 'icloudAjax/restartService.dox', '服务重启');
+INSERT INTO `sys_mo` VALUES ('2', 'icloudAjax/serviceZoom.dox', '服务扩缩容');
+INSERT INTO `sys_mo` VALUES ('3', 'icloudAjax/deleteService.dox', '服务删除');
+INSERT INTO `sys_mo` VALUES ('4', 'dataCenterViewAjax/dataCenterApplicationSwitch.dox', '数据中心切换');
+INSERT INTO `sys_mo` VALUES ('5', 'dataCenterViewAjax/serverRestart.dox', '服务器重启');
+INSERT INTO `sys_mo` VALUES ('6', 'service/doRollback.dox', '应用发布或回退');
+INSERT INTO `sys_mo` VALUES ('7', 'service/doDeleteVersion.dox', '应用版本删除');
+INSERT INTO `sys_mo` VALUES ('8', 'icloudAjax/updateConfToMarathon.dox', '更新容器规格');
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -1290,6 +1725,17 @@ CREATE TABLE `sys_role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of sys_role
+-- ----------------------------
+INSERT INTO `sys_role` VALUES ('1', '超级管理员', '超级管理员', '0');
+INSERT INTO `sys_role` VALUES ('1468229352145', '测试租户', '测试', '1');
+INSERT INTO `sys_role` VALUES ('1468229462148', '集群高级用户', 'test', '1');
+INSERT INTO `sys_role` VALUES ('2', '普通管理员', '普通管理员', '0');
+INSERT INTO `sys_role` VALUES ('3', '应用租户', '应用租户', '0');
+INSERT INTO `sys_role` VALUES ('4', '集群管理员', '集群管理员', '0');
+INSERT INTO `sys_role` VALUES ('5', '集群租户', '集群租户', '0');
+
+-- ----------------------------
 -- Table structure for sys_role_menu
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_role_menu`;
@@ -1300,14 +1746,87 @@ CREATE TABLE `sys_role_menu` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for sys_role_menu_copy
+-- Records of sys_role_menu
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_role_menu_copy`;
-CREATE TABLE `sys_role_menu_copy` (
-  `role_id` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `menu_id` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`role_id`,`menu_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+INSERT INTO `sys_role_menu` VALUES ('1', '1461062896045');
+INSERT INTO `sys_role_menu` VALUES ('1', '1464146417844');
+INSERT INTO `sys_role_menu` VALUES ('1', '1464163313088');
+INSERT INTO `sys_role_menu` VALUES ('1', '1466997384252');
+INSERT INTO `sys_role_menu` VALUES ('1', '1467873200623');
+INSERT INTO `sys_role_menu` VALUES ('1', '1468146363380');
+INSERT INTO `sys_role_menu` VALUES ('1', '1468146364989');
+INSERT INTO `sys_role_menu` VALUES ('1', '1468216027930');
+INSERT INTO `sys_role_menu` VALUES ('1', '1468222951497');
+INSERT INTO `sys_role_menu` VALUES ('1', '1468223031505');
+INSERT INTO `sys_role_menu` VALUES ('1', '1468223061508');
+INSERT INTO `sys_role_menu` VALUES ('1', '1468223071510');
+INSERT INTO `sys_role_menu` VALUES ('1', '1468223441546');
+INSERT INTO `sys_role_menu` VALUES ('1', 'c');
+INSERT INTO `sys_role_menu` VALUES ('1', 'c06');
+INSERT INTO `sys_role_menu` VALUES ('1', 'd');
+INSERT INTO `sys_role_menu` VALUES ('1', 'd01');
+INSERT INTO `sys_role_menu` VALUES ('1', 'd02');
+INSERT INTO `sys_role_menu` VALUES ('1', 'd03');
+INSERT INTO `sys_role_menu` VALUES ('1', 'd04');
+INSERT INTO `sys_role_menu` VALUES ('1', 'd05');
+INSERT INTO `sys_role_menu` VALUES ('1', 'd06');
+INSERT INTO `sys_role_menu` VALUES ('1', 'e');
+INSERT INTO `sys_role_menu` VALUES ('1', 'e01');
+INSERT INTO `sys_role_menu` VALUES ('1', 'e02');
+INSERT INTO `sys_role_menu` VALUES ('1', 'e03');
+INSERT INTO `sys_role_menu` VALUES ('1', 'f');
+INSERT INTO `sys_role_menu` VALUES ('1', 'f05');
+INSERT INTO `sys_role_menu` VALUES ('1', 'f08');
+INSERT INTO `sys_role_menu` VALUES ('1', 'f10');
+INSERT INTO `sys_role_menu` VALUES ('1', 'f11');
+INSERT INTO `sys_role_menu` VALUES ('1', 's');
+INSERT INTO `sys_role_menu` VALUES ('1', 's01');
+INSERT INTO `sys_role_menu` VALUES ('1466648219208', '1464146417844');
+INSERT INTO `sys_role_menu` VALUES ('1466648219208', 'c');
+INSERT INTO `sys_role_menu` VALUES ('1466648219208', 'c01');
+INSERT INTO `sys_role_menu` VALUES ('1466648219208', 'c04');
+INSERT INTO `sys_role_menu` VALUES ('1466648219208', 'c05');
+INSERT INTO `sys_role_menu` VALUES ('1466648219208', 'd');
+INSERT INTO `sys_role_menu` VALUES ('1466648219208', 'd01');
+INSERT INTO `sys_role_menu` VALUES ('1466648219208', 'd02');
+INSERT INTO `sys_role_menu` VALUES ('1466648219208', 'd06');
+INSERT INTO `sys_role_menu` VALUES ('1466648219208', 'd07');
+INSERT INTO `sys_role_menu` VALUES ('2', '1466749619970');
+INSERT INTO `sys_role_menu` VALUES ('2', '1468146363380');
+INSERT INTO `sys_role_menu` VALUES ('2', '1468146364989');
+INSERT INTO `sys_role_menu` VALUES ('2', 'd');
+INSERT INTO `sys_role_menu` VALUES ('2', 'd01');
+INSERT INTO `sys_role_menu` VALUES ('2', 'd02');
+INSERT INTO `sys_role_menu` VALUES ('2', 'd03');
+INSERT INTO `sys_role_menu` VALUES ('2', 'd04');
+INSERT INTO `sys_role_menu` VALUES ('2', 'd05');
+INSERT INTO `sys_role_menu` VALUES ('2', 'd06');
+INSERT INTO `sys_role_menu` VALUES ('2', 'e');
+INSERT INTO `sys_role_menu` VALUES ('3', '1464146417844');
+INSERT INTO `sys_role_menu` VALUES ('3', '1466997384252');
+INSERT INTO `sys_role_menu` VALUES ('3', '1468146364989');
+INSERT INTO `sys_role_menu` VALUES ('3', 'c');
+INSERT INTO `sys_role_menu` VALUES ('3', 'd');
+INSERT INTO `sys_role_menu` VALUES ('3', 'd01');
+INSERT INTO `sys_role_menu` VALUES ('3', 'd02');
+INSERT INTO `sys_role_menu` VALUES ('3', 'd05');
+INSERT INTO `sys_role_menu` VALUES ('3', 'd06');
+INSERT INTO `sys_role_menu` VALUES ('3', 's');
+INSERT INTO `sys_role_menu` VALUES ('3', 's01');
+INSERT INTO `sys_role_menu` VALUES ('4', '1461062896045');
+INSERT INTO `sys_role_menu` VALUES ('4', '1464146417844');
+INSERT INTO `sys_role_menu` VALUES ('4', '1466749619970');
+INSERT INTO `sys_role_menu` VALUES ('4', '1466997384252');
+INSERT INTO `sys_role_menu` VALUES ('4', '1468223061508');
+INSERT INTO `sys_role_menu` VALUES ('4', '1468223701572');
+INSERT INTO `sys_role_menu` VALUES ('4', 'c');
+INSERT INTO `sys_role_menu` VALUES ('4', 'c06');
+INSERT INTO `sys_role_menu` VALUES ('4', 'e');
+INSERT INTO `sys_role_menu` VALUES ('5', '1464146417844');
+INSERT INTO `sys_role_menu` VALUES ('5', '1466997384252');
+INSERT INTO `sys_role_menu` VALUES ('5', '1468223701572');
+INSERT INTO `sys_role_menu` VALUES ('5', 'c');
+INSERT INTO `sys_role_menu` VALUES ('5', 'c06');
 
 -- ----------------------------
 -- Table structure for sys_status_monitor
@@ -1321,6 +1840,15 @@ CREATE TABLE `sys_status_monitor` (
   `icon_style` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `last_update_time` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_status_monitor
+-- ----------------------------
+INSERT INTO `sys_status_monitor` VALUES ('1', 'Mesos(master)', '1', 'fa fa-cogs', 'color:#999', null);
+INSERT INTO `sys_status_monitor` VALUES ('2', 'Marathon', '1', 'fa fa-tasks', 'color:#999', null);
+INSERT INTO `sys_status_monitor` VALUES ('3', 'Zookeeper', '1', 'fa fa-sitemap', 'color:#999', null);
+INSERT INTO `sys_status_monitor` VALUES ('4', 'HAProxy', '1', 'fa fa-random', 'color:#999', null);
+INSERT INTO `sys_status_monitor` VALUES ('5', 'Mesos(slave)', '1', 'fa fa-cog', 'color:#999', null);
 
 -- ----------------------------
 -- Table structure for sys_user
@@ -1337,8 +1865,14 @@ CREATE TABLE `sys_user` (
   `type` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `home_path` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `user_level` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL COMMENT '用户等级',
+  `locked` varchar(32) DEFAULT '0',
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_user
+-- ----------------------------
+INSERT INTO `sys_user` VALUES ('admin', 'owblQC7zD1TxjtFbuh0zCw==', '云管理员', '云管理员', '18818888888', 't@11.cc', '0', '', 'admin/', '', '0');
 
 -- ----------------------------
 -- Table structure for sys_user_focus
@@ -1349,6 +1883,10 @@ CREATE TABLE `sys_user_focus` (
   `focus_type` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `focus_obj` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_user_focus
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_user_mo
@@ -1362,6 +1900,18 @@ CREATE TABLE `sys_user_mo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of sys_user_mo
+-- ----------------------------
+INSERT INTO `sys_user_mo` VALUES ('admin', '1', '777');
+INSERT INTO `sys_user_mo` VALUES ('admin', '2', '777');
+INSERT INTO `sys_user_mo` VALUES ('admin', '3', '777');
+INSERT INTO `sys_user_mo` VALUES ('admin', '4', '777');
+INSERT INTO `sys_user_mo` VALUES ('admin', '5', '777');
+INSERT INTO `sys_user_mo` VALUES ('admin', '6', '777');
+INSERT INTO `sys_user_mo` VALUES ('admin', '7', '777');
+INSERT INTO `sys_user_mo` VALUES ('admin', '8', '777');
+
+-- ----------------------------
 -- Table structure for sys_user_role
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_user_role`;
@@ -1372,6 +1922,11 @@ CREATE TABLE `sys_user_role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of sys_user_role
+-- ----------------------------
+INSERT INTO `sys_user_role` VALUES ('admin', '1');
+
+-- ----------------------------
 -- Table structure for sys_user_template
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_user_template`;
@@ -1380,6 +1935,10 @@ CREATE TABLE `sys_user_template` (
   `type` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `template_id` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_user_template
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for template_container
@@ -1403,6 +1962,10 @@ CREATE TABLE `template_container` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of template_container
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for template_container_more
 -- ----------------------------
 DROP TABLE IF EXISTS `template_container_more`;
@@ -1422,6 +1985,10 @@ CREATE TABLE `template_container_more` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of template_container_more
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for template_fork_more
 -- ----------------------------
 DROP TABLE IF EXISTS `template_fork_more`;
@@ -1430,6 +1997,10 @@ CREATE TABLE `template_fork_more` (
   `mid` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`cid`,`mid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of template_fork_more
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for template_service
@@ -1462,13 +2033,8 @@ CREATE TABLE `template_service` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for test
+-- Records of template_service
 -- ----------------------------
-DROP TABLE IF EXISTS `test`;
-CREATE TABLE `test` (
-  `n` varchar(255) DEFAULT NULL,
-  `bn` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for type_info
@@ -1481,6 +2047,16 @@ CREATE TABLE `type_info` (
   `type_desc` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of type_info
+-- ----------------------------
+INSERT INTO `type_info` VALUES ('0', 'image', 'weblogic', 'weblogic.png');
+INSERT INTO `type_info` VALUES ('1', 'image', 'tomcat', 'tomcat.png');
+INSERT INTO `type_info` VALUES ('2', 'image', 'java', 'java.png');
+INSERT INTO `type_info` VALUES ('3', 'environment', 'produce', '');
+INSERT INTO `type_info` VALUES ('4', 'environment', 'test', null);
+INSERT INTO `type_info` VALUES ('5', 'environment', 'pre-release', null);
 
 -- ----------------------------
 -- Table structure for user_resource
@@ -1501,6 +2077,10 @@ CREATE TABLE `user_resource` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of user_resource
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for user_service_instance
 -- ----------------------------
 DROP TABLE IF EXISTS `user_service_instance`;
@@ -1519,6 +2099,10 @@ CREATE TABLE `user_service_instance` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of user_service_instance
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for user_service_level
 -- ----------------------------
 DROP TABLE IF EXISTS `user_service_level`;
@@ -1527,6 +2111,10 @@ CREATE TABLE `user_service_level` (
   `level_id` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`username`,`level_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of user_service_level
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for user_service_list
@@ -1556,6 +2144,10 @@ CREATE TABLE `user_service_list` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of user_service_list
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for volume
 -- ----------------------------
 DROP TABLE IF EXISTS `volume`;
@@ -1568,7 +2160,11 @@ CREATE TABLE `volume` (
   `stat` int(11) DEFAULT '0' COMMENT '０　未使用　　１使用',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of volume
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for volume_app
@@ -1585,7 +2181,11 @@ CREATE TABLE `volume_app` (
   `stat` int(11) DEFAULT '0' COMMENT '0 运行',
   `volume_id` int(11) DEFAULT NULL COMMENT '存储卷对应的id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of volume_app
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for volume_snap
@@ -1600,4 +2200,8 @@ CREATE TABLE `volume_snap` (
   PRIMARY KEY (`id`),
   KEY `volume_id` (`volume_id`),
   CONSTRAINT `volume_id` FOREIGN KEY (`volume_id`) REFERENCES `volume` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of volume_snap
+-- ----------------------------

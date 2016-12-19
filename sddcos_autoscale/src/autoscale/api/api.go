@@ -1,6 +1,6 @@
 /*
 AutoSacle for SDDCOS, China Mobile Zhejiang Co. Ltd.
-By Hunter
+By Zhong ChuJian
 */
 
 package api

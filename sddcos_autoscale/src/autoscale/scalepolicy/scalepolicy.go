@@ -1,6 +1,6 @@
 /*
 AutoSacle for SDDCOS, China Mobile Zhejiang Co. Ltd.
-By Hunter
+By Zhong ChuJian
 */
 
 package scalepolicy
@@ -38,8 +38,8 @@ type ConcurrentScalePolicy struct {
 
 type MemoryScalePolicy struct {
         Enable          bool `json:"enable"`
-        MinConcurrent   int  `json:"minConcurrent"`
-        MaxConcurrent   int  `json:"maxConcurrent"`
+        MinMemory	int  `json:"minMemory"`
+        MaxMemory	int  `json:"maxMemory"`
         ScaleOutPercent int  `json:"scaleOutPercent"`
 }
 
@@ -58,7 +58,6 @@ type AppScalePolicy struct {
 	MaxTasks        int         `json:"maxTasks"`
 	CooldownSeconds int         `json:"cooldownSeconds"`
 	ScalePolicy     ScalePolicy `json:"scalePolicy"`
-	MainK		string       `json:"mainK"`
 }
 
 type AppScale struct {
